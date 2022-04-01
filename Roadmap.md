@@ -13,5 +13,5 @@
     - [X] Linter (clang-tidy)
     - [X] Formatter (clang-format)
     - [X] -Wall warnings in vscode
-    - [ ] Static analyser? 
+    - [X] Static analyser? 
     - [ ] Add Doxygen so that FTXUI docus work

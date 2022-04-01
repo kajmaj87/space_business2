@@ -7,8 +7,10 @@ project(spacebusiness
     LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_CLANG_TIDY clang-tidy)
-set(CMAKE_CXX_CPPCHECK "cppcheck")
+if(NOT PLATFORM STREQUAL Web) # do not perform those checks when building for webasm
+ set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+ set(CMAKE_CXX_CPPCHECK "cppcheck")
+endif()
 
 # add executable
 add_executable(${PROJECT_NAME} src/main.cpp)
