@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22.3)
+cmake_minimum_required(VERSION 3.18)
 
 # create project
 project(spacebusiness 
@@ -7,9 +7,15 @@ project(spacebusiness
     LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
-if(NOT PLATFORM STREQUAL Web) # do not perform those checks when building for webasm
+
+if(NOT EMSCRIPTEN) # do not perform those checks when building for webasm
  set(CMAKE_CXX_CLANG_TIDY clang-tidy)
  set(CMAKE_CXX_CPPCHECK "cppcheck")
+else()
+    #string(APPEND CMAKE_CXX_FLAGS " -s ASSERTIONS=1") 
+    string(APPEND CMAKE_CXX_FLAGS " -s USE_PTHREADS") 
+    string(APPEND CMAKE_EXE_LINKER_FLAGS " -s ASYNCIFY") 
+    string(APPEND CMAKE_EXE_LINKER_FLAGS " -s PROXY_TO_PTHREAD") 
 endif()
 
 # add executable
@@ -27,3 +33,18 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE ftxui::dom
     PRIVATE ftxui::component
      EnTT)
+
+if (EMSCRIPTEN) 
+    add_custom_command(TARGET ${PROJECT_NAME} 
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ../docs/generated)
+    add_custom_command(TARGET ${PROJECT_NAME} 
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_NAME}.js ../docs/generated/${PROJECT_NAME}.js)
+    add_custom_command(TARGET ${PROJECT_NAME} 
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_NAME}.wasm ../docs/generated/${PROJECT_NAME}.wasm)
+    add_custom_command(TARGET ${PROJECT_NAME} 
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_NAME}.worker.js ../docs/generated/${PROJECT_NAME}.worker.js)
+ endif() 
