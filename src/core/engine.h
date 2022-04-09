@@ -7,12 +7,12 @@
 
 class Engine {
 private:
-  UIScreen _screen;
   OrbitingSystem _orbiting_system;
   entt::registry _registry;
-
 public:
-  Engine(UIScreen screen);
+
+  UIScreen *_screen;
+  explicit Engine(UIScreen &screen);
   ~Engine() = default;
   void loop();
   void update(double time);

@@ -7,11 +7,11 @@
 class OrbitingSystem {
 private:
 public:
-  OrbitingSystem();
+  OrbitingSystem() = default;
   ~OrbitingSystem() = default;
   static void update(double time, entt::registry &registry);
 };
 
-OrbitingSystem::OrbitingSystem() = default;
+
 
 #endif
