@@ -10,9 +10,9 @@
 
 class UIScreen {
 private:
-  const ftxui::ScreenInteractive& _screen;
+  ftxui::ScreenInteractive _screen = ftxui::ScreenInteractive::Fullscreen();
 public:
-  explicit UIScreen(): _screen(ftxui::ScreenInteractive::Fullscreen()) {};
+  explicit UIScreen() = default;
   ~UIScreen() = default;
   void initialize();
   void render();

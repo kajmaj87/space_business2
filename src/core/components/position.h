@@ -4,11 +4,10 @@
 class Position {
 private:
 public:
-  Position();
+  Position() = default;
   ~Position() = default;
   double x, y;
 };
 
-Position::Position() = default;
 
 #endif

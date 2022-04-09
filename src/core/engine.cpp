@@ -1,8 +1,8 @@
 #include "engine.h"
 #include <chrono>
 
-Engine::Engine(UIScreen screen) {
-  _screen = screen;
+Engine::Engine(UIScreen &screen) {
+  _screen = &screen;
 }
 
 void Engine::loop() {
@@ -31,7 +31,7 @@ void Engine::loop() {
       accumulator -= dt;
       time += dt;
     }
-    _screen.render();
+    _screen->render();
   }
 }
 
