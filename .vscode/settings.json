@@ -2,5 +2,6 @@
     "clang-tidy.buildPath": "build",
     "files.associations": {
         "memory": "cpp"
-    }
+    },
+    "editor.formatOnSave": true
 }

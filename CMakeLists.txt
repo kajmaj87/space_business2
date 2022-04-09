@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 if(NOT EMSCRIPTEN) # do not perform those checks when building for webasm
 #  set(CMAKE_CXX_CLANG_TIDY clang-tidy)
- set(CMAKE_CXX_CPPCHECK "cppcheck")
+#  set(CMAKE_CXX_CPPCHECK "cppcheck")
 else()
     #string(APPEND CMAKE_CXX_FLAGS " -s ASSERTIONS=1") 
     string(APPEND CMAKE_CXX_FLAGS " -s USE_PTHREADS") 
@@ -23,8 +23,6 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 
-add_subdirectory(src/ui)
-add_subdirectory(src/core)
 
 # add dependencies
 include(cmake/CPM.cmake)
@@ -37,6 +35,9 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE ftxui::dom
     PRIVATE ftxui::component
     PRIVATE EnTT)
+
+add_subdirectory(src/ui)
+add_subdirectory(src/core)
 
 if (EMSCRIPTEN) 
     add_custom_command(TARGET ${PROJECT_NAME} 
