@@ -1,3 +1,6 @@
 {
-    "clang-tidy.buildPath": "build"
+    "clang-tidy.buildPath": "build",
+    "files.associations": {
+        "memory": "cpp"
+    }
 }

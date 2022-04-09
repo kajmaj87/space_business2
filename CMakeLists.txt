@@ -9,7 +9,7 @@ project(spacebusiness
 set(CMAKE_CXX_STANDARD 20)
 
 if(NOT EMSCRIPTEN) # do not perform those checks when building for webasm
- set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+#  set(CMAKE_CXX_CLANG_TIDY clang-tidy)
  set(CMAKE_CXX_CPPCHECK "cppcheck")
 else()
     #string(APPEND CMAKE_CXX_FLAGS " -s ASSERTIONS=1") 
@@ -22,6 +22,9 @@ endif()
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 
+add_subdirectory(src/ui)
+add_subdirectory(src/core)
+
 # add dependencies
 include(cmake/CPM.cmake)
 CPMAddPackage("gh:ArthurSonzogni/FTXUI@2.0.0")
@@ -32,7 +35,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE ftxui::screen
     PRIVATE ftxui::dom
     PRIVATE ftxui::component
-     EnTT)
+    PRIVATE EnTT)
 
 if (EMSCRIPTEN) 
     add_custom_command(TARGET ${PROJECT_NAME} 
