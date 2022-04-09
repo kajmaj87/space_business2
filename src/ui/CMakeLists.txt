@@ -1,1 +1,1 @@
-target_sources(${PROJECT_NAME} PRIVATE screen.cpp screen.h)
+target_sources(${PROJECT_NAME} PRIVATE screen.cpp)

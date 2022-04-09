@@ -21,6 +21,7 @@ endif()
 # add executable
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+target_include_directories(${PROJECT_NAME} PRIVATE src)
 
 add_subdirectory(src/ui)
 add_subdirectory(src/core)
