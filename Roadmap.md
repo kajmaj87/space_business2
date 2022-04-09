@@ -4,14 +4,14 @@
     - [ ] Rendering logic called by refresh event from core
     - [ ] Rendering based on EnTT state
     - [ ] Orbiting logic in EnTT
-    - [ ] No FTXUI references from core
-    - [ ] Separation to libs
+    - [X] No FTXUI references from core
+    - [X] Separation to libs
     - [ ] Ctrl+C or other way to end the main loop
-  - [ ] Build & Infrastructure
-    - [ ] Webasm compilation works locally
-    - [ ] Github actions for automatic deployment of webasm to some hosting (gh pages?)
+  - [X] Build & Infrastructure
+    - [X] Webasm compilation works locally
+    - [X] Github actions for automatic deployment of webasm to some hosting (gh pages?)
     - [X] Linter (clang-tidy)
     - [X] Formatter (clang-format)
     - [X] -Wall warnings in vscode
     - [X] Static analyser? 
-    - [ ] Add Doxygen so that FTXUI docus work
+    - [X] Add Doxygen so that FTXUI docus work
