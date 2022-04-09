@@ -6048,9 +6048,6 @@ var dynCall_v = Module["dynCall_v"] = createExportWrapper("dynCall_v");
 var dynCall_viii = Module["dynCall_viii"] = createExportWrapper("dynCall_viii");
 
 /** @type {function(...*):?} */
-var dynCall_iiiiiiiii = Module["dynCall_iiiiiiiii"] = createExportWrapper("dynCall_iiiiiiiii");
-
-/** @type {function(...*):?} */
 var dynCall_iiiiii = Module["dynCall_iiiiii"] = createExportWrapper("dynCall_iiiiii");
 
 /** @type {function(...*):?} */
@@ -6070,6 +6067,9 @@ var dynCall_viiii = Module["dynCall_viiii"] = createExportWrapper("dynCall_viiii
 
 /** @type {function(...*):?} */
 var dynCall_iiiii = Module["dynCall_iiiii"] = createExportWrapper("dynCall_iiiii");
+
+/** @type {function(...*):?} */
+var dynCall_iiiiiiiii = Module["dynCall_iiiiiiiii"] = createExportWrapper("dynCall_iiiiiiiii");
 
 /** @type {function(...*):?} */
 var dynCall_iiiiiii = Module["dynCall_iiiiiii"] = createExportWrapper("dynCall_iiiiiii");
@@ -6107,7 +6107,7 @@ var _asyncify_start_rewind = Module["_asyncify_start_rewind"] = createExportWrap
 /** @type {function(...*):?} */
 var _asyncify_stop_rewind = Module["_asyncify_stop_rewind"] = createExportWrapper("asyncify_stop_rewind");
 
-var __emscripten_allow_main_runtime_queued_calls = Module['__emscripten_allow_main_runtime_queued_calls'] = 38004;
+var __emscripten_allow_main_runtime_queued_calls = Module['__emscripten_allow_main_runtime_queued_calls'] = 28756;
 
 
 
