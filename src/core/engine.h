@@ -16,6 +16,7 @@ public:
   ~Engine() = default;
   void loop();
   void update(double time);
+  auto get_registry() -> entt::registry&;
 };
 
 #endif

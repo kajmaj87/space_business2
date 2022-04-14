@@ -3,18 +3,24 @@
 
 using namespace ftxui;
 
-const auto CANVAS_WITDH = 100, CANVAS_HEIGHT = 100, GRID_SIZE = 10;
 const auto TOP = 1, LEFT = 10, RIGHT = 20, BOTTOM = 5;
 
-void UIScreen::initialize() {
-  auto c = Canvas(CANVAS_WITDH, CANVAS_HEIGHT);
-  for (auto x = 0; x <= CANVAS_WITDH; x += GRID_SIZE) {
-    for (auto y = 0; y <= CANVAS_HEIGHT; y += GRID_SIZE) {
-      c.DrawPoint(x, y, true);
-    }
-  }
+void UIScreen::initialize(entt::registry &registry) {
 
-  auto middle = Renderer([&c] { return canvas(&c); });
+  auto middle = Renderer([&] {
+    auto c = ftxui::Canvas(CANVAS_WITDH, CANVAS_HEIGHT);
+    for (auto x = 0; x <= CANVAS_WITDH; x += GRID_SIZE) {
+      for (auto y = 0; y <= CANVAS_HEIGHT; y += GRID_SIZE) {
+        c.DrawPoint(x, y, true);
+      }
+    }
+    auto view = registry.view<Position>();
+    view.each([&](const auto &pos) {
+      c.DrawPoint(std::round(pos.x), std::round(pos.y), true);
+      //  printf("Drawing point at (%.2f, %.2f)", pos.x, pos.y);
+    });
+    return canvas(std::move(c));
+  });
   auto left = Renderer([] { return text("Left") | center; });
   auto right = Renderer([] { return text("right") | center; });
   auto top = Renderer([] { return text("top") | center; });
@@ -37,4 +43,6 @@ void UIScreen::initialize() {
   _screen.Loop(renderer);
 }
 
-void UIScreen::render() { _screen.PostEvent(Event::Custom); }
+void UIScreen::render() {
+  _screen.PostEvent(Event::Custom);
+}

@@ -4,8 +4,8 @@
 
 void OrbitingSystem::update(double time, entt::registry &registry) {
   auto orbit_view = registry.view<Position>();
-  orbit_view.each([&time](auto &position) {
-    position.x += time;
-    position.y += time;
+  orbit_view.each([](auto &position) {
+    position.x += rand() % 3 - 1;
+    position.y += rand() % 3 - 1;
   });
 }
