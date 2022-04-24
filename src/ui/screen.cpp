@@ -1,9 +1,8 @@
-#include <string>
 #include "screen.h"
-#include <fmt/core.h>
-#include <fmt/chrono.h>
-#include <chrono>
 #include "../core/components.h"
+#include <fmt/chrono.h>
+#include <fmt/core.h>
+#include <string>
 
 using namespace ftxui;
 using Clock = std::chrono::high_resolution_clock;
@@ -28,11 +27,11 @@ void UIScreen::initialize(entt::registry &registry) {
   });
   auto left = Renderer([] { return text("Left") | center; });
   auto right = Renderer([] { return text("right") | center; });
-  auto top = Renderer([&] { 
-      auto& time = registry.ctx<components::Time>();
-      const Clock::duration seconds_passed = std::chrono::duration<unsigned long long, std::ratio<1>>(time.seconds);
-      const TimePoint time_passed(seconds_passed);
-      return text(fmt::format("{:%Y.%m.%d %H:%M}", time_passed)) | align_right;
+  auto top = Renderer([&] {
+    auto &time = registry.ctx<components::Time>();
+    return text(fmt::format("{}.{:02}.{:02} {:02}:00", time.year, time.month,
+                            time.day, time.hour)) |
+           align_right;
   });
   auto bottom = Renderer([] { return text("bottom") | center; });
 
@@ -53,6 +52,4 @@ void UIScreen::initialize(entt::registry &registry) {
   _screen.Loop(renderer);
 }
 
-void UIScreen::render() {
-  _screen.PostEvent(Event::Custom);
-}
+void UIScreen::render() { _screen.PostEvent(Event::Custom); }
