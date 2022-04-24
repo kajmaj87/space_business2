@@ -1,8 +1,18 @@
-- [ ] Version 0.1
+- [ ] Version 0.x - Lending
+- [ ] Version 0.x - Colony economy
+- [ ] Version 0.3 - Base space economy
+  - [ ] Production & Demand in space
+  - [ ] Resource storage
+  - [ ] Contracts
+- [ ] Version 0.2 - Ships
+  - [ ] Ships
+  - [ ] Traveling & Missions
+- [ ] Version 0.1 - First steps
   - [ ] Code
     - [x] Canvas with orbiting planets
-    - [ ] Rendering logic called by refresh event from core
-    - [ ] Rendering based on EnTT state
+    - [X] Rendering logic called by refresh event from core
+    - [X] Rendering based on EnTT state
+    - [ ] Time system and date display
     - [ ] Orbiting logic in EnTT
     - [X] No FTXUI references from core
     - [X] Separation to libs

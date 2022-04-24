@@ -12,8 +12,7 @@ auto main() -> int {
     while(true){
       using namespace std::chrono_literals;
       uiScreen.render(); 
-      std::this_thread::sleep_for(100ms);
-      // std::cout << "Render update";
+      std::this_thread::sleep_for(60ms);
     }
   });
   uiScreen.initialize(engine.get_registry());

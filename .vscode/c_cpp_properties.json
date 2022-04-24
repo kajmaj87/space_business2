@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/build/_deps/ftxui-src/**",
-                "${workspaceFolder}/build/_deps/entt-src/single_include/entt"
+                "${workspaceFolder}/build/_deps/entt-src/single_include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

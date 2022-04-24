@@ -2,7 +2,7 @@
 #include "../components/orbiter.h"
 #include "../components/position.h"
 
-void OrbitingSystem::update(double time, entt::registry &registry) {
+void OrbitingSystem::update(entt::registry &registry) {
   auto orbit_view = registry.view<Position>();
   orbit_view.each([](auto &position) {
     position.x += rand() % 3 - 1;

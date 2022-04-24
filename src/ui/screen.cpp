@@ -1,7 +1,13 @@
-
+#include <string>
 #include "screen.h"
+#include <fmt/core.h>
+#include <fmt/chrono.h>
+#include <chrono>
+#include "../core/components.h"
 
 using namespace ftxui;
+using Clock = std::chrono::high_resolution_clock;
+using TimePoint = std::chrono::time_point<Clock>;
 
 const auto TOP = 1, LEFT = 10, RIGHT = 20, BOTTOM = 5;
 
@@ -17,13 +23,17 @@ void UIScreen::initialize(entt::registry &registry) {
     auto view = registry.view<Position>();
     view.each([&](const auto &pos) {
       c.DrawPoint(std::round(pos.x), std::round(pos.y), true);
-      //  printf("Drawing point at (%.2f, %.2f)", pos.x, pos.y);
     });
     return canvas(std::move(c));
   });
   auto left = Renderer([] { return text("Left") | center; });
   auto right = Renderer([] { return text("right") | center; });
-  auto top = Renderer([] { return text("top") | center; });
+  auto top = Renderer([&] { 
+      auto& time = registry.ctx<components::Time>();
+      const Clock::duration seconds_passed = std::chrono::duration<unsigned long long, std::ratio<1>>(time.seconds);
+      const TimePoint time_passed(seconds_passed);
+      return text(fmt::format("{:%Y.%m.%d %H:%M}", time_passed)) | align_right;
+  });
   auto bottom = Renderer([] { return text("bottom") | center; });
 
   int left_size = LEFT;

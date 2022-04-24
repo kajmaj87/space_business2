@@ -29,13 +29,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE src)
 include(cmake/CPM.cmake)
 CPMAddPackage("gh:ArthurSonzogni/FTXUI@2.0.0")
 CPMAddPackage("gh:skypjack/entt@3.9.0")
+CPMAddPackage("gh:fmtlib/fmt#8.1.1")
 
 # link dependencies
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE ftxui::screen
     PRIVATE ftxui::dom
     PRIVATE ftxui::component
-    PRIVATE EnTT)
+    PRIVATE EnTT
+    PRIVATE fmt)
 
 add_subdirectory(src/ui)
 add_subdirectory(src/core)

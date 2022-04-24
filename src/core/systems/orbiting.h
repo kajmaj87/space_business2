@@ -9,7 +9,7 @@ private:
 public:
   OrbitingSystem() = default;
   ~OrbitingSystem() = default;
-  static void update(double time, entt::registry &registry);
+  static void update(entt::registry &registry);
 };
 
 

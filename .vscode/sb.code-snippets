@@ -25,5 +25,34 @@
 			"",
 			"#endif"
 		]
-	}
+	},
+	"Header file for entt systems": {
+		"prefix": "sysh",
+		"body": [
+			"#ifndef SB_SYSTEMS_${1/(.*)/${1:/upcase}/}",
+			"#define SB_SYSTEMS_${1/(.*)/${1:/upcase}/}",
+			"#include <entt/entt.hpp>",
+			"",
+			"class ${1}System {",
+			"private:",
+			"\t${0}",
+			"public:",
+			"\t${1}System() = default;",
+			"\t~${1}System() = default;",
+			"\tstatic void update(entt::registry &registry);",
+			"};",
+			"",
+			"#endif"
+		]
+	},
+	"Cpp file for entt systems": {
+		"prefix": "sysc",
+		"body": [
+			"#include \"${1/(.*)/${1:/downcase}/}.h\"",
+			"",
+			"void ${1:name}System::update(entt::registry &registry){",
+			"\t$0",
+			"}"
+		]
+	},
 }
