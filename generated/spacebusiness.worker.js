@@ -137,7 +137,7 @@ self.onmessage = (e) => {
         // That is not acceptable per C/C++ specification, but x86 compiler ABI extensions
         // enable that to work. If you find the following line to crash, either change the signature
         // to "proper" void *ThreadMain(void *arg) form, or try linking with the Emscripten linker
-        // flag -s EMULATE_FUNCTION_POINTER_CASTS=1 to add in emulation for this x86 ABI extension.
+        // flag -sEMULATE_FUNCTION_POINTER_CASTS to add in emulation for this x86 ABI extension.
         var result = Module['invokeEntryPoint'](e.data.start_routine, e.data.arg);
 
         Module['checkStackCookie']();
@@ -176,11 +176,7 @@ self.onmessage = (e) => {
     } else if (e.data.target === 'setimmediate') {
       // no-op
     } else if (e.data.cmd === 'processProxyingQueue') {
-      if (Module['_pthread_self']()) { // If this thread is actually running?
-        Module['_emscripten_proxy_execute_queue'](e.data.queue);
-      }
-      // Decrement the ref count
-      Atomics.sub(HEAP32, e.data.queue >> 2, 1);
+      executeNotifiedProxyingQueue(e.data.queue);
     } else {
       err('worker.js received unknown command ' + e.data.cmd);
       err(e.data);
