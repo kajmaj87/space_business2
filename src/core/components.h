@@ -26,22 +26,23 @@ namespace components {
         double radius;
         double currentAngle {0.0};
 
-        Orbit(entt::entity me, entt::entity orbitingAround, entt::registry& registry){
+        Orbit(entt::entity me, entt::entity it, entt::registry& registry){
             using namespace components;
             using namespace constants;
             const auto [myMass, myPosition] = registry.get<Mass, Position>(me);
-            const auto [itsMass, itsPosition] = registry.get<Mass, Position>(orbitingAround);
+            const auto [itsMass, itsPosition] = registry.get<Mass, Position>(it);
 
             radius = std::sqrt((std::pow(myPosition.x - itsPosition.x, 2.0) + std::pow(myPosition.y - itsPosition.y, 2.0)));
             period = 2 * math::PI * std::sqrt(std::pow(radius, 3.0)/(physics::GRAVITATIONAL_CONSTANT * (myMass.mass + itsMass.mass))); 
+            orbitingAround = it;
 
             // add me to the orbiting bodies list of the parent
-            if (registry.all_of<OrbitingBodies>(orbitingAround)){
-                auto parent = registry.get<OrbitingBodies>(orbitingAround);
-                parent.orbiters.push_back(me);
-            } else {
-                registry.emplace<OrbitingBodies>(orbitingAround, std::vector {me});
-            }
+            // if (registry.all_of<OrbitingBodies>(orbitingAround)){
+            //     auto parent = registry.get<OrbitingBodies>(orbitingAround);
+            //     parent.orbiters.push_back(me);
+            // } else {
+            //     registry.emplace<OrbitingBodies>(orbitingAround, std::vector {me});
+            // }
         };
 
     };
