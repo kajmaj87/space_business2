@@ -29,6 +29,7 @@ void UIScreen::initialize(entt::registry &registry) {
   auto right = Renderer([] { return text("right") | center; });
   auto top = Renderer([&] {
     auto &time = registry.ctx<components::Time>();
+    0/0
     return text(fmt::format("{}.{:02}.{:02} {:02}:00", time.year, time.month,
                             time.day, time.hour)) |
            align_right;
