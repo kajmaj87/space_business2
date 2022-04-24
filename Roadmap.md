@@ -5,6 +5,7 @@
   - [ ] Resource storage
   - [ ] Contracts
 - [ ] Version 0.2 - Ships
+  - [ ] Cleanup: move components and systems to namespaces
   - [ ] Ships
   - [ ] Traveling & Missions
 - [ ] Version 0.1 - First steps
@@ -12,7 +13,7 @@
     - [x] Canvas with orbiting planets
     - [X] Rendering logic called by refresh event from core
     - [X] Rendering based on EnTT state
-    - [ ] Time system and date display
+    - [X] Time system and date display
     - [ ] Orbiting logic in EnTT
     - [X] No FTXUI references from core
     - [X] Separation to libs
