@@ -14,12 +14,7 @@ void UIScreen::initialize(entt::registry &registry) {
 
   auto middle = Renderer([&] {
     auto c = ftxui::Canvas(CANVAS_WITDH, CANVAS_HEIGHT);
-    for (auto x = 0; x <= CANVAS_WITDH; x += GRID_SIZE) {
-      for (auto y = 0; y <= CANVAS_HEIGHT; y += GRID_SIZE) {
-        c.DrawPoint(x, y, true);
-      }
-    }
-    auto view = registry.view<Position>();
+    auto view = registry.view<components::Position>();
     view.each([&](const auto &pos) {
       c.DrawPoint(std::round(pos.x), std::round(pos.y), true);
     });

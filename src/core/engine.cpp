@@ -4,16 +4,27 @@
 Engine::Engine(UIScreen &screen) {
   TimingSystem::init(_registry);
   _screen = &screen;
-  for (auto i = 0; i < 100; i++) {
-    const auto planet = _registry.create();
-    _registry.emplace<Position>(planet, 50, 50);
-  }
+  const auto sun = _registry.create();
+  _registry.emplace<components::Position>(sun, 150.0, 100.0);
+  _registry.emplace<components::Mass>(sun, 1000.0);
+  const auto mercury = _registry.create();
+  const auto earth = _registry.create();
+  const auto jupiter = _registry.create();
+  _registry.emplace<components::Position>(mercury, 150.0, 90.0);
+  _registry.emplace<components::Mass>(mercury, 0.1);
+  _registry.emplace<components::Orbit>(mercury, mercury, sun, _registry);
+  _registry.emplace<components::Position>(earth, 150.0, 50.0);
+  _registry.emplace<components::Mass>(earth, 1.0);
+  _registry.emplace<components::Orbit>(earth, earth, sun, _registry);
+  _registry.emplace<components::Position>(jupiter, 150.0, 10.0);
+  _registry.emplace<components::Mass>(jupiter, 10.0);
+  _registry.emplace<components::Orbit>(jupiter, jupiter, sun, _registry);
 }
 
 void Engine::loop() {
   while (true) {
     using namespace std::chrono_literals;
-    // std::this_thread::sleep_for(42ms);
+    std::this_thread::sleep_for(4ms);
     update();
   }
 }

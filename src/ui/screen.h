@@ -9,11 +9,9 @@
 #include "ftxui/dom/canvas.hpp"
 #include "ftxui/dom/elements.hpp" 
 
-#include "../core/components/position.h"
-
 class UIScreen {
 private:
-  const int CANVAS_WITDH = 100, CANVAS_HEIGHT = 100, GRID_SIZE = 10;
+  const int CANVAS_WITDH = 600, CANVAS_HEIGHT = 600;
   ftxui::ScreenInteractive _screen = ftxui::ScreenInteractive::Fullscreen();
 public:
   UIScreen() = default;

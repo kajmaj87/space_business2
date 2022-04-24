@@ -2,7 +2,7 @@
 #define SB_ENGINE
 
 #include "../ui/screen.h"
-#include "components/position.h"
+#include "components.h"
 #include "systems/orbiting.h"
 #include "systems/timing.h"
 
