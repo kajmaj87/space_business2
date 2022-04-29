@@ -8,16 +8,16 @@
   - [ ] Cleanup: move components and systems to namespaces
   - [ ] Ships
   - [ ] Traveling & Missions
-- [ ] Version 0.1 - First steps
-  - [ ] Code
+- [X] Version 0.1 - First steps
+  - [X] Code
     - [x] Canvas with orbiting planets
     - [X] Rendering logic called by refresh event from core
     - [X] Rendering based on EnTT state
     - [X] Time system and date display
-    - [ ] Orbiting logic in EnTT
+    - [X] Orbiting logic in EnTT
     - [X] No FTXUI references from core
     - [X] Separation to libs
-    - [ ] Ctrl+C or other way to end the main loop
+    - [X] Ctrl+C or other way to end the main loop
   - [X] Build & Infrastructure
     - [X] Webasm compilation works locally
     - [X] Github actions for automatic deployment of webasm to some hosting (gh pages?)

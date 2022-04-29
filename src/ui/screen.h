@@ -2,6 +2,7 @@
 #define SB_UISCREEN
 
 #include <entt/entt.hpp>
+#include "../core/engine.h"
 #include "ftxui/component/captured_mouse.hpp" // for ftxui
 #include "ftxui/component/component.hpp" // for Renderer, ResizableSplitBottom, ResizableSplitLeft, ResizableSplitRight, ResizableSplitTop
 #include "ftxui/component/component_base.hpp"     // for ComponentBase
@@ -16,8 +17,12 @@ private:
 public:
   UIScreen() = default;
   ~UIScreen() = default;
-  void initialize(entt::registry& registry);
+  void initialize(Engine& engine);
   void render();
+  void exit(){
+    auto exitClosure = _screen.ExitLoopClosure();
+    exitClosure();
+  }
 };
 
 

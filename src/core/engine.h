@@ -1,21 +1,30 @@
 #ifndef SB_ENGINE
 #define SB_ENGINE
 
-#include "../ui/screen.h"
 #include "components.h"
-#include "systems/orbiting.h"
-#include "systems/timing.h"
+#include "systems.h"
 
 class Engine {
 private:
-  entt::registry _registry;
+  void prepareGame();
+  void prepareScene();
+  void registerListeners();
+
 public:
-  UIScreen *_screen;
-  explicit Engine(UIScreen &screen);
+  std::shared_ptr<entt::registry> registry;
+  std::shared_ptr<entt::dispatcher> dispatcher;
+  systems::UserInput _userInputSystem;
+  Engine()
+      : registry(std::make_shared<entt::registry>()),
+        dispatcher(std::make_shared<entt::dispatcher>()),
+        _userInputSystem(this->registry, this->dispatcher) {
+    prepareGame();
+    prepareScene();
+    registerListeners();
+  };
   ~Engine() = default;
   void loop();
   void update();
-  auto get_registry() -> entt::registry&;
 };
 
 #endif

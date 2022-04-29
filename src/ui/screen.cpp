@@ -10,20 +10,22 @@ using TimePoint = std::chrono::time_point<Clock>;
 
 const auto TOP = 1, LEFT = 10, RIGHT = 20, BOTTOM = 5;
 
-void UIScreen::initialize(entt::registry &registry) {
-
+void UIScreen::initialize(Engine& engine) {
+  using namespace components;
   auto middle = Renderer([&] {
     auto c = ftxui::Canvas(CANVAS_WITDH, CANVAS_HEIGHT);
-    auto view = registry.view<components::Position>();
+    auto view = engine.registry->view<Position>();
     view.each([&](const auto &pos) {
-      c.DrawPoint(std::round(pos.x), std::round(pos.y), true);
+      c.DrawPointOff(std::round(pos.x), std::round(pos.y));
+      c.DrawPoint(std::round(pos.x), std::round(pos.y), true, Color::White);
     });
+
     return canvas(std::move(c));
   });
   auto left = Renderer([] { return text("Left") | center; });
   auto right = Renderer([] { return text("right") | center; });
   auto top = Renderer([&] {
-    auto &time = registry.ctx<components::Time>();
+    auto &time = engine.registry->ctx<Time>();
     return text(fmt::format("{}.{:02}.{:02} {:02}:00", time.year, time.month,
                             time.day, time.hour)) |
            align_right;
@@ -44,6 +46,12 @@ void UIScreen::initialize(entt::registry &registry) {
   auto renderer =
       Renderer(container, [&] { return container->Render() | border; });
 
+  renderer = CatchEvent(renderer, [&](Event event) {
+    if (event.is_character() && event.character() == "q") {
+      engine.dispatcher->enqueue<events::key_pressed>(event.character());
+    }
+    return true;
+  });
   _screen.Loop(renderer);
 }
 
