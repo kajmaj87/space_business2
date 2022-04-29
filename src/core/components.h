@@ -5,6 +5,7 @@
 #include <cmath>
 #include <entt/entt.hpp>
 #include <vector>
+#include <string>
 
 namespace components {
 
