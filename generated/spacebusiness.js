@@ -5513,13 +5513,13 @@ var ___cxa_is_pointer_type = Module["___cxa_is_pointer_type"] = createExportWrap
 
 var dynCall_ii = Module["dynCall_ii"] = createExportWrapper("dynCall_ii");
 
-var dynCall_iiii = Module["dynCall_iiii"] = createExportWrapper("dynCall_iiii");
-
-var dynCall_vii = Module["dynCall_vii"] = createExportWrapper("dynCall_vii");
-
 var dynCall_vi = Module["dynCall_vi"] = createExportWrapper("dynCall_vi");
 
 var dynCall_iii = Module["dynCall_iii"] = createExportWrapper("dynCall_iii");
+
+var dynCall_iiii = Module["dynCall_iiii"] = createExportWrapper("dynCall_iiii");
+
+var dynCall_vii = Module["dynCall_vii"] = createExportWrapper("dynCall_vii");
 
 var dynCall_v = Module["dynCall_v"] = createExportWrapper("dynCall_v");
 
@@ -5563,7 +5563,7 @@ var _asyncify_start_rewind = Module["_asyncify_start_rewind"] = createExportWrap
 
 var _asyncify_stop_rewind = Module["_asyncify_stop_rewind"] = createExportWrapper("asyncify_stop_rewind");
 
-var __emscripten_allow_main_runtime_queued_calls = Module["__emscripten_allow_main_runtime_queued_calls"] = 47044;
+var __emscripten_allow_main_runtime_queued_calls = Module["__emscripten_allow_main_runtime_queued_calls"] = 47812;
 
 unexportedRuntimeFunction("intArrayFromString", false);
 
