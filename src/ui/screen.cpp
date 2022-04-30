@@ -50,7 +50,7 @@ void UIScreen::initialize(Engine& engine) {
     if (event.is_character() && event.character() == "q") {
       engine.dispatcher->enqueue<events::key_pressed>(event.character());
     }
-    return true;
+    return false;
   });
   _screen.Loop(renderer);
 }

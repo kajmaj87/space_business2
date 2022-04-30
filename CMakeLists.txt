@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 # create project
 project(spacebusiness 
-    VERSION 0.1.1
+    VERSION 0.1.2
     DESCRIPTION "An economy simulation of space proportions"
     LANGUAGES CXX)
 
