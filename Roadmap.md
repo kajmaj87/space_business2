@@ -12,6 +12,7 @@
   - [ ] Solar system in scale
   - [ ] Zoom & camera panning
   - [ ] Interactive time controls
+  - [ ] Display current version from git/cmake
   - [ ] Optional: Configs in json (Nlohman::json)
   - [ ] Optional: Interactive tooltips/infos on mouseover
 - [X] Version 0.1 - First steps
