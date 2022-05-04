@@ -7,7 +7,13 @@
 - [ ] Version 0.2 - Ships
   - [ ] Cleanup: move components and systems to namespaces
   - [ ] Ships
-  - [ ] Traveling & Missions
+  - [ ] Traveling
+  - [ ] Update EnTT to newest version
+  - [ ] Solar system in scale
+  - [ ] Zoom & camera panning
+  - [ ] Interactive time controls
+  - [ ] Optional: Configs in json (Nlohman::json)
+  - [ ] Optional: Interactive tooltips/infos on mouseover
 - [X] Version 0.1 - First steps
   - [X] Code
     - [x] Canvas with orbiting planets
