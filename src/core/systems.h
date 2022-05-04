@@ -24,7 +24,8 @@ struct Orbiting {
 
 struct Timing {
   static void init(std::shared_ptr<entt::registry> &registry) {
-    registry->set<components::Time>(0, 2200, 1, 1, 0);
+    auto const initialUpdatesPerSecond = 60;
+    registry->set<components::Time>(0, 2200, 1, 1, 0, initialUpdatesPerSecond);
   }
 
   static void update(std::shared_ptr<entt::registry> &registry) {
@@ -40,9 +41,20 @@ struct UserInput {
       : _registry(registry), _dispatcher(dispatcher){};
 
   void processKeyPress(events::key_pressed &key_pressed) {
+    using namespace components;
     if (key_pressed.key == "q") {
-      auto &state = _registry->ctx<components::GameState>();
+      auto &state = _registry->ctx<GameState>();
       state.running = false;
+    }
+    if (key_pressed.key == "+") {
+        auto &time = _registry->ctx<Time>();
+        time.updatesPerSecond *= 2;
+    }
+    if (key_pressed.key == "-") {
+        auto &time = _registry->ctx<Time>();
+        if (time.updatesPerSecond > 1){
+          time.updatesPerSecond /= 2;
+        }
     }
   }
 

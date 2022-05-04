@@ -41,7 +41,9 @@ void Engine::prepareScene() {
 void Engine::loop() {
   while (registry->ctx<components::GameState>().running) {
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(24ms);
+    auto &time = registry->ctx<components::Time>();
+    auto frameLength = std::chrono::microseconds {1000000/time.updatesPerSecond};
+    std::this_thread::sleep_for(frameLength);
     update();
   }
 }

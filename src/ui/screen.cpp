@@ -47,7 +47,7 @@ void UIScreen::initialize(Engine& engine) {
       Renderer(container, [&] { return container->Render() | border; });
 
   renderer = CatchEvent(renderer, [&](Event event) {
-    if (event.is_character() && event.character() == "q") {
+    if (event.is_character()) {
       engine.dispatcher->enqueue<events::key_pressed>(event.character());
     }
     return false;

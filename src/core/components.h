@@ -62,6 +62,8 @@ struct Time {
   int day;
   int hour;
 
+  int updatesPerSecond;
+
   void nextTick() {
     ticks++;
     addHour();
