@@ -49,7 +49,12 @@ if (ENVIRONMENT_IS_NODE) {
   });
 }
 
-// Thread-local:
+// Thread-local guard variable for one-time init of the JS state
+var initializedJS = false;
+
+// Proxying queues that were notified before the thread started and need to be
+// executed as part of startup.
+var pendingNotifiedProxyingQueues = [];
 
 function assert(condition, text) {
   if (!condition) abort('Assertion failed: ' + text);
@@ -130,6 +135,19 @@ self.onmessage = (e) => {
       Module['PThread'].receiveObjectTransfer(e.data);
       Module['PThread'].threadInit();
 
+      if (!initializedJS) {
+
+        // Execute any proxied work that came in before the thread was
+        // initialized. Only do this once because it is only possible for
+        // proxying notifications to arrive before thread initialization on
+        // fresh workers.
+        pendingNotifiedProxyingQueues.forEach(queue => {
+          Module['executeNotifiedProxyingQueue'](queue);
+        });
+        pendingNotifiedProxyingQueues = [];
+        initializedJS = true;
+      }
+
       try {
         // pthread entry points are always of signature 'void *ThreadMain(void *arg)'
         // Native codebases sometimes spawn threads with other thread entry point signatures,
@@ -176,7 +194,12 @@ self.onmessage = (e) => {
     } else if (e.data.target === 'setimmediate') {
       // no-op
     } else if (e.data.cmd === 'processProxyingQueue') {
-      executeNotifiedProxyingQueue(e.data.queue);
+      if (initializedJS) {
+        Module['executeNotifiedProxyingQueue'](e.data.queue);
+      } else {
+        // Defer executing this queue until the runtime is initialized.
+        pendingNotifiedProxyingQueues.push(e.data.queue);
+      }
     } else {
       err('worker.js received unknown command ' + e.data.cmd);
       err(e.data);

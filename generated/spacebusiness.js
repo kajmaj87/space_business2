@@ -345,15 +345,19 @@ function getNativeTypeSize(type) {
  switch (type) {
  case "i1":
  case "i8":
+ case "u8":
   return 1;
 
  case "i16":
+ case "u16":
   return 2;
 
  case "i32":
+ case "u32":
   return 4;
 
  case "i64":
+ case "u64":
   return 8;
 
  case "float":
@@ -568,7 +572,7 @@ if (typeof WebAssembly != "object") {
 }
 
 function setValue(ptr, value, type = "i8", noSafe) {
- if (type.charAt(type.length - 1) === "*") type = "i32";
+ if (type.endsWith("*")) type = "i32";
  switch (type) {
  case "i1":
   GROWABLE_HEAP_I8()[ptr >> 0] = value;
@@ -605,7 +609,7 @@ function setValue(ptr, value, type = "i8", noSafe) {
 }
 
 function getValue(ptr, type = "i8", noSafe) {
- if (type.charAt(type.length - 1) === "*") type = "i32";
+ if (type.endsWith("*")) type = "i32";
  switch (type) {
  case "i1":
   return GROWABLE_HEAP_I8()[ptr >> 0];
@@ -631,7 +635,6 @@ function getValue(ptr, type = "i8", noSafe) {
  default:
   abort("invalid type for getValue: " + type);
  }
- return null;
 }
 
 var wasmMemory;
@@ -1046,7 +1049,7 @@ function writeStackCookie() {
  assert((max & 3) == 0);
  GROWABLE_HEAP_I32()[max >> 2] = 34821223;
  GROWABLE_HEAP_I32()[max + 4 >> 2] = 2310721022;
- GROWABLE_HEAP_I32()[0] = 1668509029;
+ GROWABLE_HEAP_U32()[0] = 1668509029;
 }
 
 function checkStackCookie() {
@@ -1057,7 +1060,7 @@ function checkStackCookie() {
  if (cookie1 != 34821223 || cookie2 != 2310721022) {
   abort("Stack overflow! Stack cookie has been overwritten, expected hex dwords 0x89BACDFE and 0x2135467, but received 0x" + cookie2.toString(16) + " 0x" + cookie1.toString(16));
  }
- if (GROWABLE_HEAP_I32()[0] !== 1668509029) abort("Runtime error: The application has corrupted its heap memory area (address zero)!");
+ if (GROWABLE_HEAP_U32()[0] !== 1668509029) abort("Runtime error: The application has corrupted its heap memory area (address zero)!");
 }
 
 (function() {
@@ -1393,50 +1396,6 @@ var tempI64;
 
 var ASM_CONSTS = {};
 
-function callRuntimeCallbacks(callbacks) {
- while (callbacks.length > 0) {
-  var callback = callbacks.shift();
-  if (typeof callback == "function") {
-   callback(Module);
-   continue;
-  }
-  var func = callback.func;
-  if (typeof func == "number") {
-   if (callback.arg === undefined) {
-    (function() {
-     dynCall_v.call(null, func);
-    })();
-   } else {
-    (function(a1) {
-     dynCall_vi.apply(null, [ func, a1 ]);
-    })(callback.arg);
-   }
-  } else {
-   func(callback.arg === undefined ? null : callback.arg);
-  }
- }
-}
-
-function withStackSave(f) {
- var stack = stackSave();
- var ret = f();
- stackRestore(stack);
- return ret;
-}
-
-function demangle(func) {
- warnOnce("warning: build with -sDEMANGLE_SUPPORT to link in libcxxabi demangling");
- return func;
-}
-
-function demangleAll(text) {
- var regex = /\b_Z[\w\d_]+/g;
- return text.replace(regex, function(x) {
-  var y = demangle(x);
-  return x === y ? x : y + " [" + x + "]";
- });
-}
-
 function killThread(pthread_ptr) {
  assert(!ENVIRONMENT_IS_PTHREAD, "Internal Error! killThread() can only ever be called from main application thread!");
  assert(pthread_ptr, "Internal Error! Null pthread_ptr in killThread!");
@@ -1673,6 +1632,52 @@ var PThread = {
  }
 };
 
+Module["PThread"] = PThread;
+
+function callRuntimeCallbacks(callbacks) {
+ while (callbacks.length > 0) {
+  var callback = callbacks.shift();
+  if (typeof callback == "function") {
+   callback(Module);
+   continue;
+  }
+  var func = callback.func;
+  if (typeof func == "number") {
+   if (callback.arg === undefined) {
+    (function() {
+     dynCall_v.call(null, func);
+    })();
+   } else {
+    (function(a1) {
+     dynCall_vi.apply(null, [ func, a1 ]);
+    })(callback.arg);
+   }
+  } else {
+   func(callback.arg === undefined ? null : callback.arg);
+  }
+ }
+}
+
+function withStackSave(f) {
+ var stack = stackSave();
+ var ret = f();
+ stackRestore(stack);
+ return ret;
+}
+
+function demangle(func) {
+ warnOnce("warning: build with -sDEMANGLE_SUPPORT to link in libcxxabi demangling");
+ return func;
+}
+
+function demangleAll(text) {
+ var regex = /\b_Z[\w\d_]+/g;
+ return text.replace(regex, function(x) {
+  var y = demangle(x);
+  return x === y ? x : y + " [" + x + "]";
+ });
+}
+
 function establishStackSpace() {
  var pthread_ptr = _pthread_self();
  var stackTop = GROWABLE_HEAP_I32()[pthread_ptr + 44 >> 2];
@@ -1764,16 +1769,16 @@ function ExceptionInfo(excPtr) {
  this.excPtr = excPtr;
  this.ptr = excPtr - 24;
  this.set_type = function(type) {
-  GROWABLE_HEAP_I32()[this.ptr + 4 >> 2] = type;
+  GROWABLE_HEAP_U32()[this.ptr + 4 >> 2] = type;
  };
  this.get_type = function() {
-  return GROWABLE_HEAP_I32()[this.ptr + 4 >> 2];
+  return GROWABLE_HEAP_U32()[this.ptr + 4 >> 2];
  };
  this.set_destructor = function(destructor) {
-  GROWABLE_HEAP_I32()[this.ptr + 8 >> 2] = destructor;
+  GROWABLE_HEAP_U32()[this.ptr + 8 >> 2] = destructor;
  };
  this.get_destructor = function() {
-  return GROWABLE_HEAP_I32()[this.ptr + 8 >> 2];
+  return GROWABLE_HEAP_U32()[this.ptr + 8 >> 2];
  };
  this.set_refcount = function(refcount) {
   GROWABLE_HEAP_I32()[this.ptr >> 2] = refcount;
@@ -1809,15 +1814,15 @@ function ExceptionInfo(excPtr) {
   return prev === 1;
  };
  this.set_adjusted_ptr = function(adjustedPtr) {
-  GROWABLE_HEAP_I32()[this.ptr + 16 >> 2] = adjustedPtr;
+  GROWABLE_HEAP_U32()[this.ptr + 16 >> 2] = adjustedPtr;
  };
  this.get_adjusted_ptr = function() {
-  return GROWABLE_HEAP_I32()[this.ptr + 16 >> 2];
+  return GROWABLE_HEAP_U32()[this.ptr + 16 >> 2];
  };
  this.get_exception_ptr = function() {
   var isPointer = ___cxa_is_pointer_type(this.get_type());
   if (isPointer) {
-   return GROWABLE_HEAP_I32()[this.excPtr >> 2];
+   return GROWABLE_HEAP_U32()[this.excPtr >> 2];
   }
   var adjusted = this.get_adjusted_ptr();
   if (adjusted !== 0) return adjusted;
@@ -3383,7 +3388,7 @@ var FS = {
    timestamp: Math.max(atime, mtime)
   });
  },
- open: (path, flags, mode, fd_start, fd_end) => {
+ open: (path, flags, mode) => {
   if (path === "") {
    throw new FS.ErrnoError(44);
   }
@@ -3432,7 +3437,7 @@ var FS = {
     throw new FS.ErrnoError(errCode);
    }
   }
-  if (flags & 512) {
+  if (flags & 512 && !created) {
    FS.truncate(node, 0);
   }
   flags &= ~(128 | 512 | 131072);
@@ -3445,7 +3450,7 @@ var FS = {
    stream_ops: node.stream_ops,
    ungotten: [],
    error: false
-  }, fd_start, fd_end);
+  });
   if (stream.stream_ops.open) {
    stream.stream_ops.open(stream);
   }
@@ -4266,75 +4271,6 @@ var SYSCALLS = {
   var buffer = GROWABLE_HEAP_U8().slice(addr, addr + len);
   FS.msync(stream, buffer, offset, len, flags);
  },
- doMknod: function(path, mode, dev) {
-  switch (mode & 61440) {
-  case 32768:
-  case 8192:
-  case 24576:
-  case 4096:
-  case 49152:
-   break;
-
-  default:
-   return -28;
-  }
-  FS.mknod(path, mode, dev);
-  return 0;
- },
- doReadlink: function(path, buf, bufsize) {
-  if (bufsize <= 0) return -28;
-  var ret = FS.readlink(path);
-  var len = Math.min(bufsize, lengthBytesUTF8(ret));
-  var endChar = GROWABLE_HEAP_I8()[buf + len];
-  stringToUTF8(ret, buf, bufsize + 1);
-  GROWABLE_HEAP_I8()[buf + len] = endChar;
-  return len;
- },
- doAccess: function(path, amode) {
-  if (amode & ~7) {
-   return -28;
-  }
-  var lookup = FS.lookupPath(path, {
-   follow: true
-  });
-  var node = lookup.node;
-  if (!node) {
-   return -44;
-  }
-  var perms = "";
-  if (amode & 4) perms += "r";
-  if (amode & 2) perms += "w";
-  if (amode & 1) perms += "x";
-  if (perms && FS.nodePermissions(node, perms)) {
-   return -2;
-  }
-  return 0;
- },
- doReadv: function(stream, iov, iovcnt, offset) {
-  var ret = 0;
-  for (var i = 0; i < iovcnt; i++) {
-   var ptr = GROWABLE_HEAP_I32()[iov >> 2];
-   var len = GROWABLE_HEAP_I32()[iov + 4 >> 2];
-   iov += 8;
-   var curr = FS.read(stream, GROWABLE_HEAP_I8(), ptr, len, offset);
-   if (curr < 0) return -1;
-   ret += curr;
-   if (curr < len) break;
-  }
-  return ret;
- },
- doWritev: function(stream, iov, iovcnt, offset) {
-  var ret = 0;
-  for (var i = 0; i < iovcnt; i++) {
-   var ptr = GROWABLE_HEAP_I32()[iov >> 2];
-   var len = GROWABLE_HEAP_I32()[iov + 4 >> 2];
-   iov += 8;
-   var curr = FS.write(stream, GROWABLE_HEAP_I8(), ptr, len, offset);
-   if (curr < 0) return -1;
-   ret += curr;
-  }
-  return ret;
- },
  varargs: undefined,
  get: function() {
   assert(SYSCALLS.varargs != undefined);
@@ -4433,16 +4369,16 @@ function __emscripten_get_now_is_monotonic() {
 }
 
 function executeNotifiedProxyingQueue(queue) {
- try {
-  if (_pthread_self()) {
-   _emscripten_proxy_execute_queue(queue);
-  }
- } finally {
-  Atomics.sub(GROWABLE_HEAP_I32(), queue >> 2, 1);
+ Atomics.store(GROWABLE_HEAP_I32(), queue >> 2, 1);
+ if (_pthread_self()) {
+  __emscripten_proxy_execute_task_queue(queue);
  }
+ Atomics.compareExchange(GROWABLE_HEAP_I32(), queue >> 2, 1, 0);
 }
 
-function __emscripten_notify_proxying_queue(targetThreadId, currThreadId, mainThreadId, queue) {
+Module["executeNotifiedProxyingQueue"] = executeNotifiedProxyingQueue;
+
+function __emscripten_notify_task_queue(targetThreadId, currThreadId, mainThreadId, queue) {
  if (targetThreadId == currThreadId) {
   setTimeout(() => executeNotifiedProxyingQueue(queue));
  } else if (ENVIRONMENT_IS_PTHREAD) {
@@ -4670,11 +4606,25 @@ function _fd_close(fd) {
  }
 }
 
+function doReadv(stream, iov, iovcnt, offset) {
+ var ret = 0;
+ for (var i = 0; i < iovcnt; i++) {
+  var ptr = GROWABLE_HEAP_U32()[iov >> 2];
+  var len = GROWABLE_HEAP_U32()[iov + 4 >> 2];
+  iov += 8;
+  var curr = FS.read(stream, GROWABLE_HEAP_I8(), ptr, len, offset);
+  if (curr < 0) return -1;
+  ret += curr;
+  if (curr < len) break;
+ }
+ return ret;
+}
+
 function _fd_read(fd, iov, iovcnt, pnum) {
  if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(7, 1, fd, iov, iovcnt, pnum);
  try {
   var stream = SYSCALLS.getStreamFromFD(fd);
-  var num = SYSCALLS.doReadv(stream, iov, iovcnt);
+  var num = doReadv(stream, iov, iovcnt);
   GROWABLE_HEAP_I32()[pnum >> 2] = num;
   return 0;
  } catch (e) {
@@ -4691,7 +4641,7 @@ function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
   var offset = offset_high * HIGH_OFFSET + (offset_low >>> 0);
   var DOUBLE_LIMIT = 9007199254740992;
   if (offset <= -DOUBLE_LIMIT || offset >= DOUBLE_LIMIT) {
-   return -61;
+   return 61;
   }
   FS.llseek(stream, offset, whence);
   tempI64 = [ stream.position >>> 0, (tempDouble = stream.position, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? (Math.min(+Math.floor(tempDouble / 4294967296), 4294967295) | 0) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0) ], 
@@ -4704,11 +4654,24 @@ function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
  }
 }
 
+function doWritev(stream, iov, iovcnt, offset) {
+ var ret = 0;
+ for (var i = 0; i < iovcnt; i++) {
+  var ptr = GROWABLE_HEAP_U32()[iov >> 2];
+  var len = GROWABLE_HEAP_U32()[iov + 4 >> 2];
+  iov += 8;
+  var curr = FS.write(stream, GROWABLE_HEAP_I8(), ptr, len, offset);
+  if (curr < 0) return -1;
+  ret += curr;
+ }
+ return ret;
+}
+
 function _fd_write(fd, iov, iovcnt, pnum) {
  if (ENVIRONMENT_IS_PTHREAD) return _emscripten_proxy_to_main_thread_js(9, 1, fd, iov, iovcnt, pnum);
  try {
   var stream = SYSCALLS.getStreamFromFD(fd);
-  var num = SYSCALLS.doWritev(stream, iov, iovcnt);
+  var num = doWritev(stream, iov, iovcnt);
   GROWABLE_HEAP_I32()[pnum >> 2] = num;
   return 0;
  } catch (e) {
@@ -5419,7 +5382,7 @@ var asmLibraryArg = {
  "_emscripten_date_now": __emscripten_date_now,
  "_emscripten_default_pthread_stack_size": __emscripten_default_pthread_stack_size,
  "_emscripten_get_now_is_monotonic": __emscripten_get_now_is_monotonic,
- "_emscripten_notify_proxying_queue": __emscripten_notify_proxying_queue,
+ "_emscripten_notify_task_queue": __emscripten_notify_task_queue,
  "_emscripten_set_offscreencanvas_size": __emscripten_set_offscreencanvas_size,
  "abort": _abort,
  "emscripten_check_blocking_allowed": _emscripten_check_blocking_allowed,
@@ -5469,8 +5432,6 @@ var _emscripten_main_thread_process_queued_calls = Module["_emscripten_main_thre
 
 var _emscripten_main_browser_thread_id = Module["_emscripten_main_browser_thread_id"] = createExportWrapper("emscripten_main_browser_thread_id");
 
-var _emscripten_proxy_execute_queue = Module["_emscripten_proxy_execute_queue"] = createExportWrapper("emscripten_proxy_execute_queue");
-
 var _free = Module["_free"] = createExportWrapper("free");
 
 var _emscripten_run_in_main_runtime_thread_js = Module["_emscripten_run_in_main_runtime_thread_js"] = createExportWrapper("emscripten_run_in_main_runtime_thread_js");
@@ -5486,6 +5447,8 @@ var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function()
 };
 
 var _malloc = Module["_malloc"] = createExportWrapper("malloc");
+
+var __emscripten_proxy_execute_task_queue = Module["__emscripten_proxy_execute_task_queue"] = createExportWrapper("_emscripten_proxy_execute_task_queue");
 
 var __emscripten_thread_free_data = Module["__emscripten_thread_free_data"] = createExportWrapper("_emscripten_thread_free_data");
 
@@ -5565,10 +5528,6 @@ var _asyncify_stop_rewind = Module["_asyncify_stop_rewind"] = createExportWrappe
 
 var __emscripten_allow_main_runtime_queued_calls = Module["__emscripten_allow_main_runtime_queued_calls"] = 47812;
 
-unexportedRuntimeFunction("intArrayFromString", false);
-
-unexportedRuntimeFunction("intArrayToString", false);
-
 unexportedRuntimeFunction("ccall", false);
 
 unexportedRuntimeFunction("cwrap", false);
@@ -5589,8 +5548,6 @@ unexportedRuntimeFunction("stringToUTF8", false);
 
 unexportedRuntimeFunction("lengthBytesUTF8", false);
 
-unexportedRuntimeFunction("stackTrace", false);
-
 unexportedRuntimeFunction("addOnPreRun", false);
 
 unexportedRuntimeFunction("addOnInit", false);
@@ -5600,12 +5557,6 @@ unexportedRuntimeFunction("addOnPreMain", false);
 unexportedRuntimeFunction("addOnExit", false);
 
 unexportedRuntimeFunction("addOnPostRun", false);
-
-unexportedRuntimeFunction("writeStringToMemory", false);
-
-unexportedRuntimeFunction("writeArrayToMemory", false);
-
-unexportedRuntimeFunction("writeAsciiToMemory", false);
 
 unexportedRuntimeFunction("addRunDependency", true);
 
@@ -5641,8 +5592,6 @@ unexportedRuntimeFunction("removeFunction", false);
 
 unexportedRuntimeFunction("prettyPrint", false);
 
-unexportedRuntimeFunction("dynCall", false);
-
 unexportedRuntimeFunction("getCompilerSetting", false);
 
 unexportedRuntimeFunction("print", false);
@@ -5658,6 +5607,68 @@ unexportedRuntimeFunction("callMain", false);
 unexportedRuntimeFunction("abort", false);
 
 Module["keepRuntimeAlive"] = keepRuntimeAlive;
+
+Module["wasmMemory"] = wasmMemory;
+
+unexportedRuntimeFunction("GROWABLE_HEAP_I8", false);
+
+unexportedRuntimeFunction("GROWABLE_HEAP_U8", false);
+
+unexportedRuntimeFunction("GROWABLE_HEAP_I16", false);
+
+unexportedRuntimeFunction("GROWABLE_HEAP_U16", false);
+
+unexportedRuntimeFunction("GROWABLE_HEAP_I32", false);
+
+unexportedRuntimeFunction("GROWABLE_HEAP_U32", false);
+
+unexportedRuntimeFunction("GROWABLE_HEAP_F32", false);
+
+unexportedRuntimeFunction("GROWABLE_HEAP_F64", false);
+
+unexportedRuntimeFunction("warnOnce", false);
+
+unexportedRuntimeFunction("stackSave", false);
+
+unexportedRuntimeFunction("stackRestore", false);
+
+unexportedRuntimeFunction("stackAlloc", false);
+
+unexportedRuntimeFunction("AsciiToString", false);
+
+unexportedRuntimeFunction("stringToAscii", false);
+
+unexportedRuntimeFunction("UTF16ToString", false);
+
+unexportedRuntimeFunction("stringToUTF16", false);
+
+unexportedRuntimeFunction("lengthBytesUTF16", false);
+
+unexportedRuntimeFunction("UTF32ToString", false);
+
+unexportedRuntimeFunction("stringToUTF32", false);
+
+unexportedRuntimeFunction("lengthBytesUTF32", false);
+
+unexportedRuntimeFunction("allocateUTF8", false);
+
+unexportedRuntimeFunction("allocateUTF8OnStack", false);
+
+Module["ExitStatus"] = ExitStatus;
+
+unexportedRuntimeFunction("intArrayFromString", false);
+
+unexportedRuntimeFunction("intArrayToString", false);
+
+unexportedRuntimeFunction("writeStringToMemory", false);
+
+unexportedRuntimeFunction("writeArrayToMemory", false);
+
+unexportedRuntimeFunction("writeAsciiToMemory", false);
+
+Module["writeStackCookie"] = writeStackCookie;
+
+Module["checkStackCookie"] = checkStackCookie;
 
 unexportedRuntimeFunction("ptrToString", false);
 
@@ -5863,6 +5874,10 @@ unexportedRuntimeFunction("getEnvStrings", false);
 
 unexportedRuntimeFunction("checkWasiClock", false);
 
+unexportedRuntimeFunction("doReadv", false);
+
+unexportedRuntimeFunction("doWritev", false);
+
 unexportedRuntimeFunction("writeI53ToI64", false);
 
 unexportedRuntimeFunction("writeI53ToI64Clamped", false);
@@ -5977,7 +5992,7 @@ unexportedRuntimeFunction("Asyncify", false);
 
 unexportedRuntimeFunction("Fibers", false);
 
-Module["PThread"] = PThread;
+unexportedRuntimeFunction("PThread", false);
 
 unexportedRuntimeFunction("killThread", false);
 
@@ -5994,44 +6009,6 @@ unexportedRuntimeFunction("exitOnMainThread", false);
 unexportedRuntimeFunction("invokeEntryPoint", false);
 
 unexportedRuntimeFunction("executeNotifiedProxyingQueue", false);
-
-unexportedRuntimeFunction("warnOnce", false);
-
-unexportedRuntimeFunction("stackSave", false);
-
-unexportedRuntimeFunction("stackRestore", false);
-
-unexportedRuntimeFunction("stackAlloc", false);
-
-unexportedRuntimeFunction("AsciiToString", false);
-
-unexportedRuntimeFunction("stringToAscii", false);
-
-unexportedRuntimeFunction("UTF16ToString", false);
-
-unexportedRuntimeFunction("stringToUTF16", false);
-
-unexportedRuntimeFunction("lengthBytesUTF16", false);
-
-unexportedRuntimeFunction("UTF32ToString", false);
-
-unexportedRuntimeFunction("stringToUTF32", false);
-
-unexportedRuntimeFunction("lengthBytesUTF32", false);
-
-unexportedRuntimeFunction("allocateUTF8", false);
-
-unexportedRuntimeFunction("allocateUTF8OnStack", false);
-
-Module["writeStackCookie"] = writeStackCookie;
-
-Module["checkStackCookie"] = checkStackCookie;
-
-Module["PThread"] = PThread;
-
-Module["wasmMemory"] = wasmMemory;
-
-Module["ExitStatus"] = ExitStatus;
 
 unexportedRuntimeSymbol("ALLOC_NORMAL", false);
 
