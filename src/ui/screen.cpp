@@ -22,10 +22,17 @@ void UIScreen::initialize(Engine &engine) {
 
     return canvas(std::move(c));
   });
-  auto left = Renderer([] {
-    return vbox(text("+ / - Change ticks per second"),
-                text("[ / ] Change seconds per tick")) |
-           center;
+  auto left = Renderer([&] {
+    auto &time = engine.registry->ctx<Time>();
+    auto &timeStats = engine.registry->ctx<TimeStats>();
+    return vbox(text("+ / - Change ticks per second (TPS)"),
+                text("[ / ] Change seconds per tick (SPT)"),
+                text(fmt::format("Requested TPS: {}", time.updatesPerSecond)),
+                text(fmt::format("Requested SPT: {}", time.secondsLastTick())),
+                text(fmt::format("Requested Speed: {}X", time.updatesPerSecond * time.secondsLastTick())),
+                text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed)),
+                text(fmt::format("Efficiency: {:.2}%", 100*timeStats.simulationEfficiency(time)))
+                ) | center;
   });
   auto right = Renderer([] { return text("right") | center; });
   auto top = Renderer([&] {

@@ -116,6 +116,13 @@ struct Time {
   }
 };
 
+struct TimeStats {
+    int simulationSpeed;
+    constexpr double simulationEfficiency(Time& time){
+        return (double)(simulationSpeed)/(time.updatesPerSecond * time.secondsLastTick());
+    }
+};
+
 } // namespace components
 
 namespace events {

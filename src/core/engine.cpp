@@ -39,12 +39,23 @@ void Engine::prepareScene() {
 }
 
 void Engine::loop() {
+  auto secondStart = std::chrono::system_clock::now();
+  auto simulationSeconds = 0;
+  auto& timeStats = registry->set<components::TimeStats>(0);
   while (registry->ctx<components::GameState>().running) {
     using namespace std::chrono_literals;
     auto &time = registry->ctx<components::Time>();
     auto frameLength = std::chrono::microseconds {1000000/time.updatesPerSecond};
     std::this_thread::sleep_for(frameLength);
     update();
+    auto timeDiff = std::chrono::system_clock::now() - secondStart;
+    if(timeDiff > 1s){
+      secondStart = std::chrono::system_clock::now();
+      timeStats.simulationSpeed = simulationSeconds;
+      simulationSeconds = 0;
+    } else {
+      simulationSeconds += time.secondsLastTick();
+    }
   }
 }
 
