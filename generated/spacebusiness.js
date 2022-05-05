@@ -5526,7 +5526,7 @@ var _asyncify_start_rewind = Module["_asyncify_start_rewind"] = createExportWrap
 
 var _asyncify_stop_rewind = Module["_asyncify_stop_rewind"] = createExportWrapper("asyncify_stop_rewind");
 
-var __emscripten_allow_main_runtime_queued_calls = Module["__emscripten_allow_main_runtime_queued_calls"] = 47812;
+var __emscripten_allow_main_runtime_queued_calls = Module["__emscripten_allow_main_runtime_queued_calls"] = 47860;
 
 unexportedRuntimeFunction("ccall", false);
 
