@@ -10,7 +10,7 @@ using TimePoint = std::chrono::time_point<Clock>;
 
 const auto TOP = 1, LEFT = 10, RIGHT = 20, BOTTOM = 5;
 
-void UIScreen::initialize(Engine& engine) {
+void UIScreen::initialize(Engine &engine) {
   using namespace components;
   auto middle = Renderer([&] {
     auto c = ftxui::Canvas(CANVAS_WITDH, CANVAS_HEIGHT);
@@ -22,7 +22,11 @@ void UIScreen::initialize(Engine& engine) {
 
     return canvas(std::move(c));
   });
-  auto left = Renderer([] { return text("Left") | center; });
+  auto left = Renderer([] {
+    return vbox(text("+ / - Change ticks per second"),
+                text("[ / ] Change seconds per tick")) |
+           center;
+  });
   auto right = Renderer([] { return text("right") | center; });
   auto top = Renderer([&] {
     auto &time = engine.registry->ctx<Time>();
