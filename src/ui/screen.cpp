@@ -26,8 +26,8 @@ void UIScreen::initialize(Engine& engine) {
   auto right = Renderer([] { return text("right") | center; });
   auto top = Renderer([&] {
     auto &time = engine.registry->ctx<Time>();
-    return text(fmt::format("{}.{:02}.{:02} {:02}:00", time.year, time.month,
-                            time.day, time.hour)) |
+    return text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year, time.month,
+                            time.day, time.hour, time.minutes)) |
            align_right;
   });
   auto bottom = Renderer([] { return text("bottom") | center; });

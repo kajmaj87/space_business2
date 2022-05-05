@@ -56,20 +56,39 @@ struct Orbit {
 };
 
 struct Time {
-  int ticks;
   int year;
   int month;
   int day;
   int hour;
+  int minutes;
+  int seconds;
 
   int updatesPerSecond;
+  int currentSecondsPerTickIndex;
+  static const int TICK_LEVELS = 11;
+  const int secondsPerTick[TICK_LEVELS] {1, 5, 15, 30, 60, 120, 300, 600, 900, 1800, 3600};
 
   void nextTick() {
-    ticks++;
-    addHour();
+      seconds += secondsLastTick();
+      if(seconds > 3600) {
+          addHour();
+          seconds -= 3600;
+      }
+      minutes = seconds / 60;
   }
 
-  constexpr auto secondsLastTick() { return 3600; }
+  constexpr int secondsLastTick() { return secondsPerTick[currentSecondsPerTickIndex]; }
+
+  void increaseSecondsPerTick(){
+      if(currentSecondsPerTickIndex < TICK_LEVELS - 1) {
+          currentSecondsPerTickIndex++;
+      }
+  }
+  void decreaseSecondsPerTick(){
+      if(currentSecondsPerTickIndex > 0) {
+          currentSecondsPerTickIndex--;
+      }
+  }
 
   void addHour() {
     if (hour < 23) {

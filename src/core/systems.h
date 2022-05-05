@@ -25,7 +25,7 @@ struct Orbiting {
 struct Timing {
   static void init(std::shared_ptr<entt::registry> &registry) {
     auto const initialUpdatesPerSecond = 60;
-    registry->set<components::Time>(0, 2200, 1, 1, 0, initialUpdatesPerSecond);
+    registry->set<components::Time>(2200, 1, 1, 0, 0, 0, initialUpdatesPerSecond, 4);
   }
 
   static void update(std::shared_ptr<entt::registry> &registry) {
@@ -55,6 +55,14 @@ struct UserInput {
         if (time.updatesPerSecond > 1){
           time.updatesPerSecond /= 2;
         }
+    }
+    if (key_pressed.key == "]") {
+        auto &time = _registry->ctx<Time>();
+        time.increaseSecondsPerTick();
+    }
+    if (key_pressed.key == "[") {
+        auto &time = _registry->ctx<Time>();
+        time.decreaseSecondsPerTick();
     }
   }
 
