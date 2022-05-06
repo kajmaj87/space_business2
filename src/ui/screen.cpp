@@ -68,8 +68,8 @@ void UIScreen::initialize(Engine &engine) {
       engine.dispatcher->enqueue<events::key_pressed>(event.character());
     }
     if (event.is_mouse()) {
-      mouse_x = (event.mouse().x - 1) * 2;
-      mouse_y = (event.mouse().y - 1) * 4;
+      mouse_x = event.mouse().x * 2;
+      mouse_y = event.mouse().y * 4;
     }
     return false;
   });
