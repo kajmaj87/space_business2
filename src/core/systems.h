@@ -4,10 +4,11 @@
 #include "components.h"
 #include <entt/entt.hpp>
 
+using namespace components;
+
 namespace systems {
 struct Orbiting {
   static void update(std::shared_ptr<entt::registry> &registry) {
-    using namespace components;
     auto time = registry->ctx<Time>();
     auto orbit_view = registry->view<Position, Orbit>();
     orbit_view.each([&time, &registry](auto &position, auto &orbit) {
@@ -24,12 +25,11 @@ struct Orbiting {
 
 struct Timing {
   static void init(std::shared_ptr<entt::registry> &registry) {
-    auto const initialUpdatesPerSecond = 60;
-    registry->set<components::Time>(2200, 1, 1, 0, 0, 0, initialUpdatesPerSecond, 4);
+    registry->set<Time>(Time{.year=2200, .month=1, .day=1, .hour=0, .minutes=0, .seconds=0, .updatesPerSecond=60, .currentSecondsPerTickIndex=4});
   }
 
   static void update(std::shared_ptr<entt::registry> &registry) {
-    auto &time = registry->ctx<components::Time>();
+    auto &time = registry->ctx<Time>();
     time.nextTick();
   }
 };

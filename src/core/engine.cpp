@@ -2,9 +2,11 @@
 #include <thread>
 #include <chrono>
 
+using namespace components;
+
 void Engine::prepareGame() {
   systems::Timing::init(registry);
-  registry->set<components::GameState>(true);
+  registry->set<GameState>(true);
 }
 
 void Engine::registerListeners() {
@@ -14,37 +16,37 @@ void Engine::registerListeners() {
 
 void Engine::prepareScene() {
   const auto sun = registry->create();
-  registry->emplace<components::Position>(sun, 150.0, 50.0);
-  registry->emplace<components::Mass>(sun, 1000.0);
+  registry->emplace<Position>(sun, 150.0, 50.0);
+  registry->emplace<Mass>(sun, 1000.0);
   const auto mercury = registry->create();
   const auto moon = registry->create();
   const auto earth = registry->create();
   const auto jupiter = registry->create();
   const auto saturn = registry->create();
-  registry->emplace<components::Position>(mercury, 150.0, 42.0);
-  registry->emplace<components::Mass>(mercury, 0.2);
-  registry->emplace<components::Orbit>(mercury, mercury, sun, registry);
-  registry->emplace<components::Position>(earth, 150.0, 32.0);
-  registry->emplace<components::Mass>(earth, 3.0);
-  registry->emplace<components::Orbit>(earth, earth, sun, registry);
-  registry->emplace<components::Position>(moon, 150.0, 30.0);
-  registry->emplace<components::Mass>(moon, 0.5);
-  registry->emplace<components::Orbit>(moon, moon, earth, registry);
-  registry->emplace<components::Position>(jupiter, 150.0, 10.0);
-  registry->emplace<components::Mass>(jupiter, 10.0);
-  registry->emplace<components::Orbit>(jupiter, jupiter, sun, registry);
-  registry->emplace<components::Position>(saturn, 150.0, 0.0);
-  registry->emplace<components::Mass>(saturn, 10.0);
-  registry->emplace<components::Orbit>(saturn, saturn, sun, registry);
+  registry->emplace<Position>(mercury, 150.0, 42.0);
+  registry->emplace<Mass>(mercury, 0.2);
+  registry->emplace<Orbit>(mercury, mercury, sun, registry);
+  registry->emplace<Position>(earth, 150.0, 32.0);
+  registry->emplace<Mass>(earth, 3.0);
+  registry->emplace<Orbit>(earth, earth, sun, registry);
+  registry->emplace<Position>(moon, 150.0, 30.0);
+  registry->emplace<Mass>(moon, 0.5);
+  registry->emplace<Orbit>(moon, moon, earth, registry);
+  registry->emplace<Position>(jupiter, 150.0, 10.0);
+  registry->emplace<Mass>(jupiter, 10.0);
+  registry->emplace<Orbit>(jupiter, jupiter, sun, registry);
+  registry->emplace<Position>(saturn, 150.0, 0.0);
+  registry->emplace<Mass>(saturn, 10.0);
+  registry->emplace<Orbit>(saturn, saturn, sun, registry);
 }
 
 void Engine::loop() {
   auto secondStart = std::chrono::system_clock::now();
   auto simulationSeconds = 0;
-  auto& timeStats = registry->set<components::TimeStats>(0);
-  while (registry->ctx<components::GameState>().running) {
+  auto& timeStats = registry->set<TimeStats>(TimeStats{.simulationSpeed = 0});
+  while (registry->ctx<GameState>().running) {
     using namespace std::chrono_literals;
-    auto &time = registry->ctx<components::Time>();
+    auto &time = registry->ctx<Time>();
     auto frameLength = std::chrono::microseconds {1000000/time.updatesPerSecond};
     std::this_thread::sleep_for(frameLength);
     update();
