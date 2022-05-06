@@ -31,8 +31,11 @@ void UIScreen::initialize(Engine &engine) {
   auto top = Renderer([&] {
     auto &time = engine.registry->ctx<Time>();
     auto &timeStats = engine.registry->ctx<TimeStats>();
+    auto days = timeStats.simulationSpeed / 86400;
+    auto rest = timeStats.simulationSpeed % 86400;
     return vbox(text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year, time.month,
-                            time.day, time.hour, time.minutes)),
+                            time.day, time.hour, time.minutes)) | align_right,
+                text(fmt::format("Game time advances {}days and {:%Hh%Mm%Ss} every second", days, std::chrono::seconds{rest})),
                 text(fmt::format("Efficiency: {:.3}%", 100*timeStats.simulationEfficiency(time))),
                 text(fmt::format("Requested TPS: {}", time.updatesPerSecond)),
                 text(fmt::format("Requested SPT: {}", time.secondsLastTick())),
