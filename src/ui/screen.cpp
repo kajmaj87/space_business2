@@ -8,7 +8,7 @@ using namespace ftxui;
 using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
 
-const auto TOP = 1, LEFT = 10, RIGHT = 20, BOTTOM = 5;
+const auto TOP = 2, LEFT = 0, RIGHT = 20, BOTTOM = 5;
 
 void UIScreen::initialize(Engine &engine) {
   using namespace components;
@@ -23,23 +23,22 @@ void UIScreen::initialize(Engine &engine) {
     return canvas(std::move(c));
   });
   auto left = Renderer([&] {
-    auto &time = engine.registry->ctx<Time>();
-    auto &timeStats = engine.registry->ctx<TimeStats>();
-    return vbox(text("+ / - Change ticks per second (TPS)"),
-                text("[ / ] Change seconds per tick (SPT)"),
-                text(fmt::format("Requested TPS: {}", time.updatesPerSecond)),
-                text(fmt::format("Requested SPT: {}", time.secondsLastTick())),
-                text(fmt::format("Requested Speed: {}X", time.updatesPerSecond * time.secondsLastTick())),
-                text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed)),
-                text(fmt::format("Efficiency: {:.2}%", 100*timeStats.simulationEfficiency(time)))
-                ) | center;
+    return vbox(
+                text("+ / - Change ticks per second (TPS)"),
+                text("[ / ] Change seconds per tick (SPT)")) | center;
   });
   auto right = Renderer([] { return text("right") | center; });
   auto top = Renderer([&] {
     auto &time = engine.registry->ctx<Time>();
-    return text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year, time.month,
-                            time.day, time.hour, time.minutes)) |
-           align_right;
+    auto &timeStats = engine.registry->ctx<TimeStats>();
+    return vbox(text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year, time.month,
+                            time.day, time.hour, time.minutes)),
+                text(fmt::format("Efficiency: {:.2}%", 100*timeStats.simulationEfficiency(time))),
+                text(fmt::format("Requested TPS: {}", time.updatesPerSecond)),
+                text(fmt::format("Requested SPT: {}", time.secondsLastTick())),
+                text(fmt::format("Requested Speed: {}X", time.updatesPerSecond * time.secondsLastTick())),
+                text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed))
+                ) | align_right;
   });
   auto bottom = Renderer([] { return text("bottom") | center; });
 
