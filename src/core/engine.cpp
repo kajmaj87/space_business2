@@ -7,6 +7,7 @@ using namespace components;
 void Engine::prepareGame() {
   systems::Timing::init(registry);
   registry->set<GameState>(true);
+  registry->set<TimeStats>(TimeStats{.simulationSpeed=0});
 }
 
 void Engine::registerListeners() {
@@ -43,8 +44,8 @@ void Engine::prepareScene() {
 void Engine::loop() {
   auto secondStart = std::chrono::system_clock::now();
   auto simulationSeconds = 0;
-  auto& timeStats = registry->set<TimeStats>(TimeStats{.simulationSpeed = 0});
   while (registry->ctx<GameState>().running) {
+  auto& timeStats = registry->ctx<TimeStats>();
     using namespace std::chrono_literals;
     auto &time = registry->ctx<Time>();
     auto frameLength = std::chrono::microseconds {1000000/time.updatesPerSecond};
