@@ -33,11 +33,12 @@ void UIScreen::initialize(Engine &engine) {
     auto &timeStats = engine.registry->ctx<TimeStats>();
     return vbox(text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year, time.month,
                             time.day, time.hour, time.minutes)),
-                text(fmt::format("Efficiency: {:.2}%", 100*timeStats.simulationEfficiency(time))),
+                text(fmt::format("Efficiency: {:.3}%", 100*timeStats.simulationEfficiency(time))),
                 text(fmt::format("Requested TPS: {}", time.updatesPerSecond)),
                 text(fmt::format("Requested SPT: {}", time.secondsLastTick())),
                 text(fmt::format("Requested Speed: {}X", time.updatesPerSecond * time.secondsLastTick())),
-                text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed))
+                text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed)),
+                text(fmt::format("Best Speed: {}X", timeStats.bestSimulationSpeed))
                 ) | align_right;
   });
   auto bottom = Renderer([] { return text("bottom") | center; });

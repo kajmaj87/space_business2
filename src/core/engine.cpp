@@ -7,7 +7,7 @@ using namespace components;
 void Engine::prepareGame() {
   systems::Timing::init(registry);
   registry->set<GameState>(true);
-  registry->set<TimeStats>(TimeStats{.simulationSpeed=0});
+  registry->set<TimeStats>(TimeStats{});
 }
 
 void Engine::registerListeners() {
@@ -42,22 +42,30 @@ void Engine::prepareScene() {
 }
 
 void Engine::loop() {
-  auto secondStart = std::chrono::system_clock::now();
+  auto lastSecondStart = std::chrono::high_resolution_clock::now();
   auto simulationSeconds = 0;
   while (registry->ctx<GameState>().running) {
-  auto& timeStats = registry->ctx<TimeStats>();
     using namespace std::chrono_literals;
+    using Clock = std::chrono::high_resolution_clock;
+    auto frameStart = Clock::now();
+    auto &timeStats = registry->ctx<TimeStats>();
     auto &time = registry->ctx<Time>();
-    auto frameLength = std::chrono::microseconds {1000000/time.updatesPerSecond};
-    std::this_thread::sleep_for(frameLength);
+    auto frameLength = std::chrono::nanoseconds{1000000000 / time.updatesPerSecond};
     update();
-    auto timeDiff = std::chrono::system_clock::now() - secondStart;
-    if(timeDiff > 1s){
-      secondStart = std::chrono::system_clock::now();
-      timeStats.simulationSpeed = simulationSeconds;
+    auto frameEnd = Clock::now();
+    auto timeSinceLastSecond = frameEnd - lastSecondStart;
+    if (timeSinceLastSecond > 1s) {
+      lastSecondStart = frameEnd;
+      timeStats.simulationSpeed = simulationSeconds + time.secondsLastTick();
+      if (timeStats.simulationSpeed > timeStats.bestSimulationSpeed) {
+        timeStats.bestSimulationSpeed = timeStats.simulationSpeed;
+      }
       simulationSeconds = 0;
     } else {
       simulationSeconds += time.secondsLastTick();
+    }
+    while (Clock::now() - frameStart < frameLength){
+      // wait till we reach frametime
     }
   }
 }

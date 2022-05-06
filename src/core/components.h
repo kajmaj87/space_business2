@@ -118,6 +118,7 @@ struct Time {
 
 struct TimeStats {
     int simulationSpeed;
+    int bestSimulationSpeed;
     constexpr double simulationEfficiency(Time& time){
         return (double)(simulationSpeed)/(time.updatesPerSecond * time.secondsLastTick());
     }
