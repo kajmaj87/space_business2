@@ -20,12 +20,21 @@ void UIScreen::initialize(Engine &engine) {
   int top_size = TOP;
   int bottom_size = BOTTOM;
 
-  // totaly reduced splitter gives -1
-  auto canvas_width = [&]() { return _screen.dimx() - left_size - 1 - right_size - 1;};
-  auto canvas_height =[&]() { return _screen.dimy() - top_size - 1 - bottom_size - 1;};
+  // totally reduced splitter gives -1
+  auto canvas_width = [&]() {
+    return _screen.dimx() - left_size - 1 - right_size - 1;
+  };
+  auto canvas_height = [&]() {
+    return _screen.dimy() - top_size - 1 - bottom_size - 1;
+  };
+  auto inside_canvas = [&](int x, int y) {
+    return x > (left_size + 1) * 2 &&
+           x < (_screen.dimx() - right_size - 1) * 2 &&
+           y > (top_size + 1) * 4 && y < (_screen.dimy() - bottom_size - 1) * 4;
+  };
 
   auto middle = Renderer([&] {
-    auto c = ftxui::Canvas(canvas_width()*2, canvas_height()*4);
+    auto c = ftxui::Canvas(canvas_width() * 2, canvas_height() * 4);
     auto view = engine.registry->view<Position>();
     view.each([&](const auto &pos) {
       c.DrawPointOff(std::round(pos.x), std::round(pos.y));
@@ -40,11 +49,18 @@ void UIScreen::initialize(Engine &engine) {
   });
   auto right = Renderer([&] {
     return vbox(
-        text(fmt::format("({},{}): {}", mouse_x, mouse_y, "nothing")) | center,
-        text(fmt::format("{}, {}, {}, {}", left_size, right_size, top_size, bottom_size)) | center,
-        text(fmt::format("screen {}, {} ", _screen.dimx(), _screen.dimy())) | center,
-        text(fmt::format("canvas size w:{}, h:{} ", canvas_width(), canvas_height())) | center
-      );
+        text(fmt::format("({},{}): {}", mouse_x, mouse_y,
+                         inside_canvas(mouse_x, mouse_y) ? "canvas"
+                                                         : "nothing")) |
+            center,
+        text(fmt::format("{}, {}, {}, {}", left_size, right_size, top_size,
+                         bottom_size)) |
+            center,
+        text(fmt::format("screen {}, {} ", _screen.dimx(), _screen.dimy())) |
+            center,
+        text(fmt::format("canvas size w:{}, h:{} ", canvas_width(),
+                         canvas_height())) |
+            center);
   });
   auto top = Renderer([&] {
     auto &time = engine.registry->ctx<Time>();
@@ -71,7 +87,6 @@ void UIScreen::initialize(Engine &engine) {
            align_right;
   });
   auto bottom = Renderer([] { return text("bottom") | center; });
-
 
   auto container = middle;
   container = ResizableSplitLeft(left, container, &left_size);

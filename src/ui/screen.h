@@ -12,7 +12,6 @@
 
 class UIScreen {
 private:
-  const int CANVAS_WITDH = 600, CANVAS_HEIGHT = 600;
   ftxui::ScreenInteractive _screen = ftxui::ScreenInteractive::Fullscreen();
 public:
   UIScreen() = default;
