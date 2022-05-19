@@ -25,7 +25,7 @@ struct Orbiting {
 
 struct Timing {
   static void init(std::shared_ptr<entt::registry> &registry) {
-    registry->set<Time>(Time{.year=2200, .month=1, .day=1, .hour=0, .minutes=0, .seconds=0, .updatesPerSecond=60, .currentSecondsPerTickIndex=4});
+    registry->set<Time>(Time{.year=2200, .month=1, .day=1, .hour=0, .minutes=0, .seconds=0, .updatesPerSecond=60, .currentSecondsPerTickIndex=7});
   }
 
   static void update(std::shared_ptr<entt::registry> &registry) {

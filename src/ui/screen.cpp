@@ -58,8 +58,7 @@ void UIScreen::initialize(Engine &engine) {
             center,
         text(fmt::format("screen {}, {} ", _screen.dimx(), _screen.dimy())) |
             center,
-        text(fmt::format("canvas size w:{}, h:{} ", canvas_width(),
-                         canvas_height())) |
+        text(fmt::format("canvas {}, {} ", canvas_width(), canvas_height())) |
             center);
   });
   auto top = Renderer([&] {
