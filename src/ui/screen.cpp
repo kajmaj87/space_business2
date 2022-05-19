@@ -14,6 +14,8 @@ void UIScreen::initialize(Engine &engine) {
   using namespace components;
   int mouse_x = 0;
   int mouse_y = 0;
+  int last_mouse_x = 0;
+  int last_mouse_y = 0;
 
   int left_size = LEFT;
   int right_size = RIGHT;
@@ -36,9 +38,10 @@ void UIScreen::initialize(Engine &engine) {
   auto middle = Renderer([&] {
     auto c = ftxui::Canvas(canvas_width() * 2, canvas_height() * 4);
     auto view = engine.registry->view<Position>();
+    auto &camera = engine.registry->ctx<Camera>();
     view.each([&](const auto &pos) {
-      c.DrawPointOff(std::round(pos.x), std::round(pos.y));
-      c.DrawPoint(std::round(pos.x), std::round(pos.y), true, Color::White);
+      c.DrawPointOff(std::round(pos.x + camera.offset_x), std::round(pos.y + camera.offset_y));
+      c.DrawPoint(std::round(pos.x + camera.offset_x), std::round(pos.y + camera.offset_y), true, Color::White);
     });
     return canvas(std::move(c));
   });
@@ -103,6 +106,15 @@ void UIScreen::initialize(Engine &engine) {
     if (event.is_mouse()) {
       mouse_x = event.mouse().x * 2;
       mouse_y = event.mouse().y * 4;
+      if (event.mouse().button == Mouse::Left) {
+        auto diff_x = mouse_x - last_mouse_x;
+        auto diff_y = mouse_y - last_mouse_y;
+        if (diff_x != 0 || diff_y != 0) {
+          engine.dispatcher->enqueue<events::mouse_drag>(diff_x, diff_y);
+        }
+      }
+      last_mouse_x = mouse_x;
+      last_mouse_y = mouse_y;
     }
     return false;
   });

@@ -124,12 +124,21 @@ struct TimeStats {
     }
 };
 
+struct Camera {
+  int offset_x, offset_y;
+};
+
 } // namespace components
 
 namespace events {
 
 struct key_pressed {
   std::string key;
+};
+
+struct mouse_drag {
+  int x;
+  int y;
 };
 
 } // namespace events

@@ -8,11 +8,14 @@ void Engine::prepareGame() {
   systems::Timing::init(registry);
   registry->set<GameState>(true);
   registry->set<TimeStats>(TimeStats{});
+  registry->set<Camera>();
 }
 
 void Engine::registerListeners() {
   dispatcher->sink<events::key_pressed>()
       .connect<&systems::UserInput::processKeyPress>(_userInputSystem);
+  dispatcher->sink<events::mouse_drag>()
+      .connect<&systems::UserInput::processMouseDrag>(_userInputSystem);
 }
 
 void Engine::prepareScene() {

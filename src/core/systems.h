@@ -66,6 +66,12 @@ struct UserInput {
     }
   }
 
+  void processMouseDrag(events::mouse_drag &mouse_drag) {
+    auto &camera = _registry->ctx<components::Camera>();
+    camera.offset_x += mouse_drag.x;
+    camera.offset_y += mouse_drag.y;
+  }
+
   void update() { _dispatcher->update(); }
 
 private:
