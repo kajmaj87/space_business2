@@ -44,10 +44,10 @@ void Engine::prepareScene() {
   registry->emplace<Orbit>(saturn, saturn, sun, registry);
 }
 
-void Engine::loop() {
+void Engine::loop(std::atomic<bool> &running) {
   auto lastSecondStart = std::chrono::high_resolution_clock::now();
   auto simulationSeconds = 0;
-  while (registry->ctx<GameState>().running) {
+  while (running) {
     using namespace std::chrono_literals;
     using Clock = std::chrono::high_resolution_clock;
     auto frameStart = Clock::now();
