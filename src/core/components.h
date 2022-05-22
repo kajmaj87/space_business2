@@ -44,14 +44,6 @@ struct Orbit {
         std::sqrt(std::pow(radius, 3.0) / (physics::GRAVITATIONAL_CONSTANT *
                                            (myMass.mass + itsMass.mass)));
     orbitingAround = it;
-
-    // add me to the orbiting bodies list of the parent
-    // if (registry.all_of<OrbitingBodies>(orbitingAround)){
-    //     auto parent = registry.get<OrbitingBodies>(orbitingAround);
-    //     parent.orbiters.push_back(me);
-    // } else {
-    //     registry.emplace<OrbitingBodies>(orbitingAround, std::vector {me});
-    // }
   };
 };
 

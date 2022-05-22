@@ -23,7 +23,7 @@ public:
     registerListeners();
   };
   ~Engine() = default;
-  void loop(std::atomic<bool> &running);
+  void loop();
   void update();
 };
 

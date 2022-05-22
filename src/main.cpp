@@ -3,17 +3,15 @@
 #include <csignal>
 #include <chrono>
 
-std::atomic_bool running = true;
-
 auto main() -> int {
   UIScreen uiScreen;
 
   Engine engine = Engine();
   std::thread game_loop([&engine]() { 
-    engine.loop(running); 
+    engine.loop(); 
   });
-  std::thread render_loop([&uiScreen]() { 
-    while(running){
+  std::thread render_loop([&engine, &uiScreen]() { 
+    while(engine.registry->ctx<GameState>().running){
       using namespace std::chrono_literals;
       uiScreen.render(); 
       std::this_thread::sleep_for(60ms);
@@ -21,9 +19,8 @@ auto main() -> int {
   });
   
   uiScreen.initialize(engine);
-  running = false;
+  engine.registry->ctx<GameState>().running = false;
   game_loop.join();
   render_loop.join();
-
   return 0;
 }
