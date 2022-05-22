@@ -30,6 +30,7 @@ include(cmake/CPM.cmake)
 CPMAddPackage("gh:ArthurSonzogni/FTXUI@2.0.0")
 CPMAddPackage("gh:skypjack/entt@3.9.0")
 CPMAddPackage("gh:fmtlib/fmt#8.1.1")
+CPMAddPackage("gh:gabime/spdlog@1.10.0")
 
 # link dependencies
 target_link_libraries(${PROJECT_NAME} 
@@ -37,7 +38,8 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE ftxui::dom
     PRIVATE ftxui::component
     PRIVATE EnTT
-    PRIVATE fmt)
+    PRIVATE fmt
+    PRIVATE spdlog::spdlog)
 
 add_subdirectory(src/ui)
 add_subdirectory(src/core)
