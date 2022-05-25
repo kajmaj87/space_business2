@@ -118,6 +118,7 @@ struct TimeStats {
 
 struct Camera {
   int offset_x, offset_y;
+  double zoom;
 };
 
 } // namespace components
@@ -131,6 +132,12 @@ struct key_pressed {
 struct mouse_drag {
   int x;
   int y;
+};
+
+struct zoom {
+  int x;
+  int y;
+  double scale;
 };
 
 } // namespace events

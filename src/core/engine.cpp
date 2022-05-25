@@ -8,7 +8,7 @@ void Engine::prepareGame() {
   systems::Timing::init(registry);
   registry->set<GameState>(true);
   registry->set<TimeStats>(TimeStats{});
-  registry->set<Camera>();
+  registry->set<Camera>(0,0, 1.0);
 }
 
 void Engine::registerListeners() {
@@ -16,6 +16,8 @@ void Engine::registerListeners() {
       .connect<&systems::UserInput::processKeyPress>(_userInputSystem);
   dispatcher->sink<events::mouse_drag>()
       .connect<&systems::UserInput::processMouseDrag>(_userInputSystem);
+  dispatcher->sink<events::zoom>()
+      .connect<&systems::UserInput::processZoom>(_userInputSystem);
 }
 
 void Engine::prepareScene() {

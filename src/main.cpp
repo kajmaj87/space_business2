@@ -30,6 +30,7 @@ auto main() -> int {
       uiScreen.render();
       std::this_thread::sleep_for(60ms);
     }
+    uiScreen.exit();
   });
   
   uiScreen.initialize(engine);
