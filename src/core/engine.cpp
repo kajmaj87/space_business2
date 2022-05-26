@@ -3,12 +3,13 @@
 #include <chrono>
 
 using namespace components;
+using namespace constants::physics;
 
 void Engine::prepareGame() {
   systems::Timing::init(registry);
   registry->set<GameState>(true);
   registry->set<TimeStats>(TimeStats{});
-  registry->set<Camera>(0,0, 1.0);
+  registry->set<Camera>(0,0, 1.0/(0.1au));
 }
 
 void Engine::registerListeners() {
@@ -22,28 +23,29 @@ void Engine::registerListeners() {
 
 void Engine::prepareScene() {
   const auto sun = registry->create();
-  registry->emplace<Position>(sun, 150.0, 50.0);
-  registry->emplace<Mass>(sun, 1000.0);
+  registry->emplace<Position>(sun, 0.0, 0.0);
+  registry->emplace<Mass>(sun, 1.9885e30);
   const auto mercury = registry->create();
   const auto moon = registry->create();
   const auto earth = registry->create();
   const auto jupiter = registry->create();
   const auto saturn = registry->create();
-  registry->emplace<Position>(mercury, 150.0, 42.0);
-  registry->emplace<Mass>(mercury, 0.2);
+  using namespace constants::physics;
+  registry->emplace<Position>(mercury, 0.0, 0.387098au);
+  registry->emplace<Mass>(mercury, 3.3011e23);
   registry->emplace<Orbit>(mercury, mercury, sun, registry);
-  registry->emplace<Position>(earth, 150.0, 32.0);
-  registry->emplace<Mass>(earth, 3.0);
+  registry->emplace<Position>(earth, 0.0, 1.0au);
+  registry->emplace<Mass>(earth, 5.97237e24);
   registry->emplace<Orbit>(earth, earth, sun, registry);
-  registry->emplace<Position>(moon, 150.0, 30.0);
-  registry->emplace<Mass>(moon, 0.5);
+  registry->emplace<Position>(moon, 0.0, 1.00257au);
+  registry->emplace<Mass>(moon, 7.342e22);
   registry->emplace<Orbit>(moon, moon, earth, registry);
-  registry->emplace<Position>(jupiter, 150.0, 10.0);
-  registry->emplace<Mass>(jupiter, 10.0);
-  registry->emplace<Orbit>(jupiter, jupiter, sun, registry);
-  registry->emplace<Position>(saturn, 150.0, 0.0);
-  registry->emplace<Mass>(saturn, 10.0);
-  registry->emplace<Orbit>(saturn, saturn, sun, registry);
+  // registry->emplace<Position>(jupiter, 150.0, 10.0);
+  // registry->emplace<Mass>(jupiter, 10.0);
+  // registry->emplace<Orbit>(jupiter, jupiter, sun, registry);
+  // registry->emplace<Position>(saturn, 150.0, 0.0);
+  // registry->emplace<Mass>(saturn, 10.0);
+  // registry->emplace<Orbit>(saturn, saturn, sun, registry);
 }
 
 void Engine::loop() {

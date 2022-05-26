@@ -74,8 +74,8 @@ struct UserInput {
 
   void processZoom(events::zoom &zoom){
     auto &camera = _registry->ctx<components::Camera>();
-    camera.offset_x += std::round((1-zoom.scale)*(zoom.x - camera.offset_x));
-    camera.offset_y += std::round((1-zoom.scale)*(zoom.y - camera.offset_y));
+    camera.offset_x += std::round((1-zoom.scale)*(zoom.x - camera.offset_x - 2));
+    camera.offset_y += std::round((1-zoom.scale)*(zoom.y - camera.offset_y - 4));
     camera.zoom *= zoom.scale;
   }
 

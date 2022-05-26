@@ -21,7 +21,7 @@ endif()
 
 # add executable
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wno-literal-suffix -Wno-reserved-user-defined-literal -Wno-user-defined-literals)
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 
 
