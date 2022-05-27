@@ -7,7 +7,7 @@ namespace physics {
 
 const auto GRAVITATIONAL_CONSTANT = 6.67430151515151515e-11;
 constexpr auto ASTRONOMICAL_UNIT = 1.495978707e11;
-constexpr double operator ""au(long double au) {
+constexpr double operator ""_au(long double au) {
   return au*ASTRONOMICAL_UNIT;
 };
 
