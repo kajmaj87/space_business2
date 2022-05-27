@@ -3,6 +3,7 @@
 #include <fmt/chrono.h>
 #include <fmt/core.h>
 #include <string>
+#include <version.h>
 
 using namespace ftxui;
 using Clock = std::chrono::high_resolution_clock;
@@ -82,24 +83,24 @@ void UIScreen::initialize(Engine &engine) {
     auto &timeStats = engine.registry->ctx<TimeStats>();
     auto days = timeStats.simulationSpeed / 86400;
     auto rest = timeStats.simulationSpeed % 86400;
-    return vbox(text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year,
+    return vbox(hbox(text(fmt::format("{}@{} {}", GIT_BRANCH, GIT_COMMIT_HASH, BUILD_TIME)),
+                filler(),
+                text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year,
                                  time.month, time.day, time.hour,
-                                 time.minutes)) |
-                    align_right,
+                                 time.minutes))),
                 text(fmt::format(
                     "Game time advances {} days and {:%Hh%Mm%Ss} every second",
-                    days, std::chrono::seconds{rest})),
+                    days, std::chrono::seconds{rest})) | align_right,
                 text(fmt::format("Efficiency: {:.3}%",
-                                 100 * timeStats.simulationEfficiency(time))),
-                text(fmt::format("Requested TPS: {}", time.updatesPerSecond)),
-                text(fmt::format("Requested SPT: {}", time.secondsLastTick())),
+                                 100 * timeStats.simulationEfficiency(time))) | align_right,
+                text(fmt::format("Requested TPS: {}", time.updatesPerSecond)) | align_right,
+                text(fmt::format("Requested SPT: {}", time.secondsLastTick())) | align_right,
                 text(fmt::format("Requested Speed: {}X",
                                  time.updatesPerSecond *
-                                     time.secondsLastTick())),
-                text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed)),
+                                     time.secondsLastTick())) | align_right,
+                text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed)) | align_right,
                 text(fmt::format("Best Speed: {}X",
-                                 timeStats.bestSimulationSpeed))) |
-           align_right;
+                                 timeStats.bestSimulationSpeed)) | align_right);
   });
   auto bottom = Renderer([] { return text("bottom") | center; });
 
