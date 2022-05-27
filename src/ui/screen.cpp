@@ -83,14 +83,16 @@ void UIScreen::initialize(Engine &engine) {
     auto &timeStats = engine.registry->ctx<TimeStats>();
     auto days = timeStats.simulationSpeed / 86400;
     auto rest = timeStats.simulationSpeed % 86400;
-    return vbox(hbox(text(fmt::format("{}@{} {}", GIT_BRANCH, GIT_COMMIT_HASH, BUILD_TIME)),
+    return vbox(hbox(text(fmt::format("Version:    {}@{}", GIT_BRANCH, GIT_COMMIT_HASH)),
                 filler(),
                 text(fmt::format("{}.{:02}.{:02} {:02}:{:02}", time.year,
                                  time.month, time.day, time.hour,
                                  time.minutes))),
+                hbox(text(fmt::format("Build time: {}", BUILD_TIME)),
+                filler(),
                 text(fmt::format(
                     "Game time advances {} days and {:%Hh%Mm%Ss} every second",
-                    days, std::chrono::seconds{rest})) | align_right,
+                    days, std::chrono::seconds{rest}))),
                 text(fmt::format("Efficiency: {:.3}%",
                                  100 * timeStats.simulationEfficiency(time))) | align_right,
                 text(fmt::format("Requested TPS: {}", time.updatesPerSecond)) | align_right,
@@ -101,6 +103,7 @@ void UIScreen::initialize(Engine &engine) {
                 text(fmt::format("Real Speed: {}X", timeStats.simulationSpeed)) | align_right,
                 text(fmt::format("Best Speed: {}X",
                                  timeStats.bestSimulationSpeed)) | align_right);
+  
   });
   auto bottom = Renderer([] { return text("bottom") | center; });
 
