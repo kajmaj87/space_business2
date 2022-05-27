@@ -40,12 +40,12 @@ void Engine::prepareScene() {
   registry->emplace<Position>(moon, 0.0, 1.00257_au);
   registry->emplace<Mass>(moon, 7.342e22);
   registry->emplace<Orbit>(moon, moon, earth, registry);
-  // registry->emplace<Position>(jupiter, 150.0, 10.0);
-  // registry->emplace<Mass>(jupiter, 10.0);
-  // registry->emplace<Orbit>(jupiter, jupiter, sun, registry);
-  // registry->emplace<Position>(saturn, 150.0, 0.0);
-  // registry->emplace<Mass>(saturn, 10.0);
-  // registry->emplace<Orbit>(saturn, saturn, sun, registry);
+  registry->emplace<Position>(jupiter, 0.0, 5.2038_au);
+  registry->emplace<Mass>(jupiter, 1.8982e27);
+  registry->emplace<Orbit>(jupiter, jupiter, sun, registry);
+  registry->emplace<Position>(saturn, 0.0, 9.5826_au);
+  registry->emplace<Mass>(saturn, 5.6834e27);
+  registry->emplace<Orbit>(saturn, saturn, sun, registry);
 }
 
 void Engine::loop() {
