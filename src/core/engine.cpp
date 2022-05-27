@@ -44,7 +44,7 @@ void Engine::prepareScene() {
   registry->emplace<Mass>(jupiter, 1.8982e27);
   registry->emplace<Orbit>(jupiter, jupiter, sun, registry);
   registry->emplace<Position>(saturn, 0.0, 9.5826_au);
-  registry->emplace<Mass>(saturn, 5.6834e27);
+  registry->emplace<Mass>(saturn, 5.6834e26);
   registry->emplace<Orbit>(saturn, saturn, sun, registry);
 }
 
