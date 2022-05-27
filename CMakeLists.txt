@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
-set(CMAKE_CPP_COMPILER gcc)
+set(CMAKE_C_COMPILER gcc)
+set(CMAKE_CXX_COMPILER gcc)
 # create project
 project(spacebusiness 
     VERSION 0.1.2
